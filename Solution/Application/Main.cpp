@@ -90,14 +90,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		}
 		else
 		{
-			Engine::GetInstance()->BeginScene();
+			//Engine::GetInstance()->BeginScene();
 
 			if (globalGame->Update() == false)
 			{
 				break;
 			}
 
-			Engine::GetInstance()->EndScene();
+			Engine::GetInstance()->Render();
+			//Engine::GetInstance()->EndScene();
 		}
 	}
 

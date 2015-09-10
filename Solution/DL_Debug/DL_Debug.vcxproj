@@ -75,11 +75,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DL_Assert.h" />
+    <ClInclude Include="DL_BlockTimer.h" />
     <ClInclude Include="DL_Debug.h" />
     <ClInclude Include="DL_StackWalker.h" />
     <ClInclude Include="StackWalker\StackWalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DL_BlockTimer.cpp" />
     <ClCompile Include="DL_Debug.cpp" />
     <ClCompile Include="DL_StackWalker.cpp" />
     <ClCompile Include="StackWalker\StackWalker.cpp" />

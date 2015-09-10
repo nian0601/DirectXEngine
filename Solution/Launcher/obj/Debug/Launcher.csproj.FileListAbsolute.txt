@@ -85,3 +85,11 @@ c:\Users\stnian1\Dropbox\TheGameAssembly\Kurser\Applicerad 3D Programmering\Labb
 c:\Users\stnian1\Dropbox\TheGameAssembly\Kurser\Applicerad 3D Programmering\Labbar\Labb 4\Svar\Solution\Launcher\obj\Debug\Launcher.csproj.GenerateResource.Cache
 c:\Users\stnian1\Dropbox\TheGameAssembly\Kurser\Applicerad 3D Programmering\Labbar\Labb 4\Svar\Solution\Launcher\obj\Debug\Launcher.exe
 c:\Users\stnian1\Dropbox\TheGameAssembly\Kurser\Applicerad 3D Programmering\Labbar\Labb 4\Svar\Solution\Launcher\obj\Debug\Launcher.pdb
+c:\Users\Nicke\Desktop\DirectXEngine\Workbed\Launcher.exe.config
+c:\Users\Nicke\Desktop\DirectXEngine\Workbed\Launcher.exe
+c:\Users\Nicke\Desktop\DirectXEngine\Workbed\Launcher.pdb
+c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.Form1.resources
+c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.Properties.Resources.resources
+c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.csproj.GenerateResource.Cache
+c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.exe
+c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.pdb
