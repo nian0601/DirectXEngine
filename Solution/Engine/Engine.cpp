@@ -26,23 +26,13 @@ void Engine::Shutdown()
 	myDirectX = nullptr;
 }
 
-void Engine::SwitchBuffers()
+void Engine::Render()
 {
+	DL_TIME_FUNCTION
 	myDirectX->Present(0, 0);
 
 	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	myDirectX->Clear(clearColor);
-}
-
-void Engine::BeginScene()
-{
-	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	myDirectX->Clear(clearColor);
-}
-
-void Engine::EndScene()
-{
-	myDirectX->Present(0, 0);
 }
 
 void Engine::OnResize(int aWidth, int aHeigth)
@@ -52,6 +42,8 @@ void Engine::OnResize(int aWidth, int aHeigth)
 
 bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 {
+	DL_TIME_FUNCTION
+	//DL_BlockTimer test("Test");
 	if (WindowSetup(aHwnd, aWndProc) == false)
 	{
 		ENGINE_LOG("Failed to Create Window");

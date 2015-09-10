@@ -13,7 +13,7 @@ public:
 	static bool Create(HWND& aHwnd, WNDPROC aWndProc, SetupInfo& aSetupInfo);
 	static Engine* GetInstance();
 	void Shutdown();
-	void SwitchBuffers();
+	void Render();
 	void OnResize(int aWidth, int aHeigth);
 
 	ID3D11Device* GetDevice();
@@ -22,8 +22,6 @@ public:
 	EffectContainer& GetEffectContainer();
 	Model* LoadModel(const std::string& aPath, Effect* aEffect);
 
-	void BeginScene();
-	void EndScene();
 
 private:
 	bool Init(HWND& aHwnd, WNDPROC aWndProc);
