@@ -51,3 +51,4 @@ Libs/libfbxsdk-md_Release.lib
 *.sdf
 Solution/ProjectName.opensdf
 temp/
+Workbed/log/
