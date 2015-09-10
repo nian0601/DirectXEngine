@@ -20,11 +20,14 @@
 *.lai
 *.la
 *.a
+*.lib
 
 # Executables
 *.exe
 *.out
 *.app
+
+
 Libs/CommonUtilities_Debug.lib
 Libs/CommonUtilities_Release.lib
 Libs/DL_Debug_Debug.lib
@@ -37,6 +40,10 @@ Libs/InputWrapper_Debug.lib
 Libs/InputWrapper_Release.lib
 Libs/Timer_Debug.lib
 Libs/Timer_Release.lib
+Libs/Effects11_Debug.lib
+Libs/Effects11_Release.lib
+Libs/libfbxsdk-md_Debug.lib
+Libs/libfbxsdk-md_Release.lib
 
 *.ipch
 *.cache
