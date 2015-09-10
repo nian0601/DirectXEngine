@@ -48,3 +48,6 @@ Libs/libfbxsdk-md_Release.lib
 *.ipch
 *.cache
 
+*.sdf
+Solution/ProjectName.opensdf
+temp/
