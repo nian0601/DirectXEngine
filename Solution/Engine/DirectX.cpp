@@ -34,7 +34,6 @@ void DirectX::OnResize(const int aWidth, const int aHeight)
 	myContext->Flush();
 	mySwapChain->ResizeBuffers(1, aWidth, aHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 
-	D3DSwapChainSetup();
 	D3DRenderTargetSetup();
 	D3DViewPortSetup(aWidth, aHeight);
 	D3DStencilBufferSetup(aWidth, aHeight);

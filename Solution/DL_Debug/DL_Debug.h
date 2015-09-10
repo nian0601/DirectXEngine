@@ -1,4 +1,7 @@
 #pragma once
+#include "DL_BlockTimer.h"
+
+#define DL_TIME_FUNCTION DL_Debug::DL_BlockTimer funcTimer__(__FUNCTION__);
 
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__, string)
 #define DL_ASSERT_EXP(expression, string) DL_Debug::Debug::GetInstance()->AssertMessage(expression, __FILE__,__LINE__,__FUNCTION__, string)

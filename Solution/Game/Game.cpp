@@ -35,6 +35,9 @@ bool Game::Init()
 	myInstances.Add(new Instance(*myExtrudeModel));
 	myInstances.Add(new Instance(*myNormalModel));
 
+	for (int i = 0; i < 1000; ++i)
+		myInstances.Add(new Instance(*myNormalModel));
+
 	myInstances[0]->SetPosition({ -15.f, 0.f, 0.f });
 	myInstances[2]->SetPosition({ 15.f, 0.f, 0.f });
 	myInstances[3]->SetPosition({ 0.f, 15.f, 0.f });
@@ -47,10 +50,9 @@ bool Game::Init()
 
 	myScene = new Scene();
 	myScene->SetCamera(&myCamera);
-	myScene->AddInstance(myInstances[0]);
-	myScene->AddInstance(myInstances[1]);
-	myScene->AddInstance(myInstances[2]);
-	myScene->AddInstance(myInstances[3]);
+	for (int i = 0; i < myInstances.Size(); ++i)
+		myScene->AddInstance(myInstances[i]);
+
 	myScene->AddLight(myLight);
 
 	GAME_LOG("Init Successful");
@@ -64,6 +66,7 @@ bool Game::Destroy()
 
 bool Game::Update()
 {
+	DL_TIME_FUNCTION
 	CU::TimerManager::GetInstance()->Update();
 	float deltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
 
