@@ -55,9 +55,9 @@ void Model::Init()
 	}
 }
 
-void Model::InitPolygon(Effect* aEffect)
+void Model::InitPolygon()
 {
-	myEffect = aEffect;
+	myEffect = Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/PolygonEffect.fx");
 
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -67,26 +67,47 @@ void Model::InitPolygon(Effect* aEffect)
 
 	D3DX11_PASS_DESC passDesc;
 	myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-	Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
-	
+	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+	if (FAILED(hr) != S_OK)
+	{
+		DL_MESSAGE_BOX("Failed to CreateInputLayout", "InitPolygon", MB_ICONWARNING);
+	}
+
 	Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 
-
-	//myVertices.Add({ { 0.0f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f, 1.f } });
-	//myVertices.Add({ { 0.5f, -0.5f, 0.5 }, { 0.f, 1.f, 0.f, 1.f } });
-	//myVertices.Add({ { -0.5f, -0.5f, 0.5f }, { 0.f, 0.f, 1.f, 1.f } });
+	CU::GrowingArray<VertexPosColor> vertices;
+	vertices.Init(3);
+	vertices.Add({ { 0.0f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f, 1.f } });
+	vertices.Add({ { 0.5f, -0.5f, 0.5 }, { 0.f, 1.f, 0.f, 1.f } });
+	vertices.Add({ { -0.5f, -0.5f, 0.5f }, { 0.f, 0.f, 1.f, 1.f } });
 
 
 	myVerticeIndices.Add(0);
 	myVerticeIndices.Add(1);
 	myVerticeIndices.Add(2);
 
-	InitBuffers(VertexType::POS_NORM_UV);
+	InitVertexBaseData(vertices.Size(), VertexType::POS_COLOR, sizeof(VertexPosColor), reinterpret_cast<char*>(&vertices[0]));
+	InitIndexBaseData(DXGI_FORMAT_R32_UINT, myVerticeIndices.Size(), reinterpret_cast<char*>(&myVerticeIndices[0]));
+
+	InitVertexBuffer();
+	InitIndexBuffer();
+
+	Surface surf;
+	surf.SetEffect(myEffect);
+	surf.SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	surf.SetVertexStart(0);
+	surf.SetVertexCount(vertices.Size());
+	surf.SetIndexStart(0);
+	surf.SetIndexCount(myVerticeIndices.Size());
+
+	mySurfaces.Add(surf);
+
+	myIsNULLObject = false;
 }
 
-void Model::InitCube(Effect* aEffect)
+void Model::InitCube(const float aWidth, const float aHeight, const float aDepth)
 {
-	myEffect = aEffect;
+	myEffect = Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/CubeEffect.fx");
 
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -97,45 +118,59 @@ void Model::InitCube(Effect* aEffect)
 
 	D3DX11_PASS_DESC passDesc;
 	myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-	Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+	if (FAILED(hr) != S_OK)
+	{
+		DL_MESSAGE_BOX("Failed to CreateInputLayout", "InitCube", MB_ICONWARNING);
+	}
 
 	Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 
+	
+#pragma region Vertices
+	CU::GrowingArray<VertexPosNormUV> vertices;
+	vertices.Init(24);
+
+	float halfWidth = aWidth / 2.f;
+	float halfHeight = aHeight / 2.f;
+	float halfDepth = aDepth / 2.f;
+
 	//0 - 3 (Top)
-	myVertices.Add({ { -1.0f, 1.0f, -1.0f }, { 0.f, 1.f, 0.f }, {0.0f, 0.0f} });
-	myVertices.Add({ { 1.0f, 1.0f, -1.0f }, { 0.f, 1.f, 0.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, 1.0f, 1.0f }, { 0.f, 1.f, 0.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { -1.0f, 1.0f, 1.0f }, { 0.f, 1.f, 0.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, -halfDepth }, { 0.f, 1.f, 0.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { halfWidth, halfHeight, -halfDepth }, { 0.f, 1.f, 0.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { halfWidth, halfHeight, halfDepth }, { 0.f, 1.f, 0.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, halfDepth }, { 0.f, 1.f, 0.f }, { 0.0f, 1.0f } });
 
 	//4 - 7 (Bottom)
-	myVertices.Add({ { -1.0f, -1.0f, -1.0f }, { 0.f, -1.f, 0.f }, { 0.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, -1.0f, -1.0f }, { 0.f, -1.f, 0.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, -1.0f, 1.0f }, { 0.f, -1.f, 0.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { -1.0f, -1.0f, 1.0f }, { 0.f, -1.f, 0.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, -halfDepth }, { 0.f, -1.f, 0.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, -halfDepth }, { 0.f, -1.f, 0.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, halfDepth }, { 0.f, -1.f, 0.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, halfDepth }, { 0.f, -1.f, 0.f }, { 0.0f, 1.0f } });
 
 	//8 - 11 (Left)
-	myVertices.Add({ { -1.0f, -1.0f, 1.0f }, { -1.f, 0.f, 0.f }, { 0.0f, 0.0f } });
-	myVertices.Add({ { -1.0f, -1.0f, -1.0f }, { -1.f, 0.f, 0.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { -1.0f, 1.0f, -1.0f }, { -1.f, 0.f, 0.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { -1.0f, 1.0f, 1.0f }, { -1.f, 0.f, 0.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, halfDepth }, { -1.f, 0.f, 0.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, -halfDepth }, { -1.f, 0.f, 0.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, -halfDepth }, { -1.f, 0.f, 0.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, halfDepth }, { -1.f, 0.f, 0.f }, { 0.0f, 1.0f } });
  
 	//12 - 15 (Right)
-	myVertices.Add({ { 1.0f, -1.0f, 1.0f }, { 1.f, 0.f, 0.f }, { 0.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, -1.0f, -1.0f }, { 1.f, 0.f, 0.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, 1.0f, -1.0f }, { 1.f, 0.f, 0.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { 1.0f, 1.0f, 1.0f }, { 1.f, 0.f, 0.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, halfDepth }, { 1.f, 0.f, 0.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, -halfDepth }, { 1.f, 0.f, 0.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { halfWidth, halfHeight, -halfDepth }, { 1.f, 0.f, 0.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { halfWidth, halfHeight, halfDepth }, { 1.f, 0.f, 0.f }, { 0.0f, 1.0f } });
 
 	//16 - 19 (Front)
-	myVertices.Add({ { -1.0f, -1.0f, -1.0f }, { 0.f, 0.f, -1.f }, { 0.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, -1.0f, -1.0f }, { 0.f, 0.f, -1.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, 1.0f, -1.0f }, { 0.f, 0.f, -1.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { -1.0f, 1.0f, -1.0f }, { 0.f, 0.f, -1.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, -halfDepth }, { 0.f, 0.f, -1.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, -halfDepth }, { 0.f, 0.f, -1.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { halfWidth, halfHeight, -halfDepth }, { 0.f, 0.f, -1.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, -halfDepth }, { 0.f, 0.f, -1.f }, { 0.0f, 1.0f } });
  
 	//20 - 23 (Back)
-	myVertices.Add({ { -1.0f, -1.0f, 1.0f }, { 0.f, 0.f, 1.f }, { 0.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, -1.0f, 1.0f }, { 0.f, 0.f, 1.f }, { 1.0f, 0.0f } });
-	myVertices.Add({ { 1.0f, 1.0f, 1.0f }, { 0.f, 0.f, 1.f }, { 1.0f, 1.0f } });
-	myVertices.Add({ { -1.0f, 1.0f, 1.0f }, { 0.f, 0.f, 1.f }, { 0.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, -halfHeight, halfDepth }, { 0.f, 0.f, 1.f }, { 0.0f, 0.0f } });
+	vertices.Add({ { halfWidth, -halfHeight, halfDepth }, { 0.f, 0.f, 1.f }, { 1.0f, 0.0f } });
+	vertices.Add({ { halfWidth, halfHeight, halfDepth }, { 0.f, 0.f, 1.f }, { 1.0f, 1.0f } });
+	vertices.Add({ { -halfWidth, halfHeight, halfDepth }, { 0.f, 0.f, 1.f }, { 0.0f, 1.0f } });
+#pragma endregion
 
 #pragma region Indices
 
@@ -196,7 +231,11 @@ void Model::InitCube(Effect* aEffect)
 #pragma endregion
 	
 
-	InitBuffers(VertexType::POS_NORM_UV);
+	InitVertexBaseData(vertices.Size(), VertexType::POS_NORM_UV, sizeof(VertexPosNormUV), reinterpret_cast<char*>(&vertices[0]));
+	InitIndexBaseData(DXGI_FORMAT_R32_UINT, myVerticeIndices.Size(), reinterpret_cast<char*>(&myVerticeIndices[0]));
+
+	InitVertexBuffer();
+	InitIndexBuffer();
 
 	Surface surf;
 	surf.SetEffect(myEffect);
@@ -205,47 +244,69 @@ void Model::InitCube(Effect* aEffect)
 	surf.SetVertexCount(myVertices.Size());
 	surf.SetIndexStart(0);
 	surf.SetIndexCount(myVerticeIndices.Size());
-	
 	surf.SetTexture("DiffuseTexture", "Data/resources/texture/seafloor.dds", true);
 
 	mySurfaces.Add(surf);
+
+	myIsNULLObject = false;
 }
 
-void Model::InitGeometry(Effect* aEffect, const MeshData& aMeshData)
+void Model::InitGeometry(const MeshData& aMeshData)
 {
-	//myEffect = aEffect;
-	//
-	//D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-	//{
-	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//};
-	//
-	//D3DX11_PASS_DESC passDesc;
-	//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-	//Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
-	//
-	//Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
-	//
-	//myVertices.Init(aMeshData.myVertices.Size());
-	//for (int i = 0; i < aMeshData.myVertices.Size(); ++i)
-	//{
-	//	VertexPosNormColor vertex;
-	//	vertex.myPos = aMeshData.myVertices[i].myPosition;
-	//	vertex.myNorm = aMeshData.myVertices[i].myNormal;
-	//	vertex.myColor = aMeshData.myVertices[i].myColor;
-	//
-	//	myVertices.Add(vertex);
-	//}
-	//
-	//myVerticeIndices.Init(aMeshData.myIndices.Size());
-	//for (int i = 0; i < aMeshData.myIndices.Size(); ++i)
-	//{
-	//	myVerticeIndices.Add(aMeshData.myIndices[i]);
-	//}
-	//
-	//InitBuffers(VertexType::POS_NORM_COLOR);
+	myEffect = Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/GeometryEffect.fx");
+	
+	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	
+	D3DX11_PASS_DESC passDesc;
+	myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+	if (FAILED(hr) != S_OK)
+	{
+		DL_MESSAGE_BOX("Failed to CreateInputLayout", "InitGeometry", MB_ICONWARNING);
+	}
+
+
+	Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
+	
+	CU::GrowingArray<VertexPosNormColor> vertices;
+	vertices.Init(aMeshData.myVertices.Size());
+	for (int i = 0; i < aMeshData.myVertices.Size(); ++i)
+	{
+		VertexPosNormColor vertex;
+		vertex.myPos = aMeshData.myVertices[i].myPosition;
+		vertex.myNorm = aMeshData.myVertices[i].myNormal;
+		vertex.myColor = aMeshData.myVertices[i].myColor;
+	
+		vertices.Add(vertex);
+	}
+	
+	for (int i = 0; i < aMeshData.myIndices.Size(); ++i)
+	{
+		myVerticeIndices.Add(aMeshData.myIndices[i]);
+	}
+	
+	InitVertexBaseData(vertices.Size(), VertexType::POS_NORM_COLOR, sizeof(VertexPosNormColor), reinterpret_cast<char*>(&vertices[0]));
+	InitIndexBaseData(DXGI_FORMAT_R32_UINT, myVerticeIndices.Size(), reinterpret_cast<char*>(&myVerticeIndices[0]));
+
+	InitVertexBuffer();
+	InitIndexBuffer();
+
+	Surface surf;
+	surf.SetEffect(myEffect);
+	surf.SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	surf.SetVertexStart(0);
+	surf.SetVertexCount(myVertices.Size());
+	surf.SetIndexStart(0);
+	surf.SetIndexCount(myVerticeIndices.Size());
+
+	mySurfaces.Add(surf);
+
+	myIsNULLObject = false;
 }
 
 void Model::AddChild(Model* aChild)
@@ -265,6 +326,7 @@ void Model::Render(const CU::Matrix44<float>& aOrientation)
 	{
 		myEffect->SetWorldMatrix(aOrientation);
 
+		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 
@@ -290,48 +352,23 @@ void Model::Render(const CU::Matrix44<float>& aOrientation)
 	}
 }
 
-bool Model::InitBuffers(VertexType aVertexType)
+void Model::InitVertexBaseData(const int aNumberOfVertices, const VertexType aVertexType, const int aVertexSize, char* aVertexData)
 {
 	myVertexBaseData = new VertexDataWrapper();
-	myVertexBaseData->myNumberOfVertices = myVertices.Size();
-	myVertexBaseData->myStride = 0;
+	myVertexBaseData->myNumberOfVertices = aNumberOfVertices;
+	myVertexBaseData->myStride = aVertexSize;
 	myVertexBaseData->myType = aVertexType;
-	switch (aVertexType)
-	{
-	case VertexType::POS_COLOR:
-		myVertexBaseData->mySize = sizeof(VertexPosColor);
-		break;
-	case VertexType::POS_UV:
-		myVertexBaseData->mySize = sizeof(VertexPosUV);
-		break;
-	case VertexType::POS_COLOR_UV:
-		myVertexBaseData->mySize = sizeof(VertexPosColorUV);
-		break;
-	case VertexType::POS_NORM_UV:
-		myVertexBaseData->mySize = sizeof(VertexPosNormUV);
-		break;
-	default:
-		DL_ASSERT("[Model]: Invalid input to InitBuffers");
-		break;
-	}
+	myVertexBaseData->mySize = aVertexSize * myVertexBaseData->myNumberOfVertices;
+	myVertexBaseData->myVertexData = aVertexData;
+}
 
-	myVertexBaseData->mySize *= myVertexBaseData->myNumberOfVertices;
-	
-	myVertexBaseData->myVertexData = reinterpret_cast<char*>(&myVertices[0]);
-
+void Model::InitIndexBaseData(const DXGI_FORMAT aFormat, const int aNumberOfIndices, char* aIndexData)
+{
 	myIndexBaseData = new VertexIndexWrapper();
-	myIndexBaseData->myFormat = DXGI_FORMAT_R32_UINT;
-	myIndexBaseData->myIndexData = reinterpret_cast<char*>(&myVerticeIndices[0]);
-	myIndexBaseData->myNumberOfIndices = myVerticeIndices.Size();
+	myIndexBaseData->myFormat = aFormat;
+	myIndexBaseData->myNumberOfIndices = aNumberOfIndices;
+	myIndexBaseData->myIndexData = aIndexData;
 	myIndexBaseData->mySize = sizeof(UINT) * myIndexBaseData->myNumberOfIndices;
-
-	if (InitVertexBuffer() == false)
-		return false;
-
-	if (InitIndexBuffer() == false)
-		return false;
-
-	return true;
 }
 
 bool Model::InitVertexBuffer()

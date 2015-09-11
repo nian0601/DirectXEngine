@@ -93,3 +93,12 @@ c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.Proper
 c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.csproj.GenerateResource.Cache
 c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.exe
 c:\Users\Nicke\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.pdb
+c:\Users\stnian1\Desktop\DirectXEngine\Workbed\Launcher.exe.config
+c:\Users\stnian1\Desktop\DirectXEngine\Workbed\Launcher.exe
+c:\Users\stnian1\Desktop\DirectXEngine\Workbed\Launcher.pdb
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.csprojResolveAssemblyReference.cache
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.Form1.resources
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.Properties.Resources.resources
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.csproj.GenerateResource.Cache
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.exe
+c:\Users\stnian1\Desktop\DirectXEngine\Solution\Launcher\obj\Debug\Launcher.pdb

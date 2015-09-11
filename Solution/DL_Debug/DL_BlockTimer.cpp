@@ -33,7 +33,7 @@ namespace DL_Debug
 		std::stringstream output;
 		output << myName << " took " << ms << " ms." << std::endl;
 
-		OutputDebugStringA(output.str().c_str());
-		//DL_DEBUG("%s took %d ms", myName.c_str(), ms);
+		//OutputDebugStringA(output.str().c_str());
+		FUNCTION_TIMER_LOG("%s took %d ms", myName.c_str(), ms);
 	}
 }

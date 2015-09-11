@@ -22,17 +22,19 @@ public:
 	~Model();
 
 	void Init();
-	void InitPolygon(Effect* aEffect);
-	void InitCube(Effect* aEffect);
+	void InitPolygon();
+	void InitCube(const float aWidth = 1.f, const float aHeight = 1.f, const float aDepth = 1.f);
 	void AddChild(Model* aChild);
-	void InitGeometry(Effect* aEffect, const MeshData& aMeshData);
+	void InitGeometry(const MeshData& aMeshData);
 
 	Effect* GetEffect();
 
 	void Render(const CU::Matrix44<float>& aOrientation);
 
 private:
-	bool InitBuffers(VertexType aVertexType);
+	void InitVertexBaseData(const int aNumberOfVertices, const VertexType aVertexType, const int aVertexSize, char* aVertexData);
+	void InitIndexBaseData(const DXGI_FORMAT aFormat, const int aNumberOfIndices, char* aIndexData);
+
 	bool InitVertexBuffer();
 	bool InitIndexBuffer();
 

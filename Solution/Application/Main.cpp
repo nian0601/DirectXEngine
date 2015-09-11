@@ -48,10 +48,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 			{
 				DL_Debug::Debug::GetInstance()->ActivateFilterLog(DL_Debug::eFilterLog::FBX);
 			}
+			else if (command == "-useFunctionTimerLog")
+			{
+				DL_Debug::Debug::GetInstance()->ActivateFilterLog(DL_Debug::eFilterLog::FUNCTION_TIMER);
+			}
 		}
 
 		LocalFree(realCommands);
 	}
+
 
 	
 
@@ -68,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 
 
 	globalGame = new Game();
-	if (globalGame->Init() == false)
+	if (globalGame->Init(hwnd) == false)
 	{
 		return 1;
 	}

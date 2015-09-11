@@ -29,6 +29,9 @@ DL_Debug::Debug::Debug()
 
 	logSetting.second = "FBX";
 	myFilterLogStatus[eFilterLog::FBX] = logSetting;
+
+	logSetting.second = "FunctionTimer";
+	myFilterLogStatus[eFilterLog::FUNCTION_TIMER] = logSetting;
 }
 
 
@@ -167,6 +170,7 @@ void DL_Debug::Debug::DebugMessage(const char *aFileName, int aLine, const char 
 	vsprintf_s(buffer, aFormattedString, args);
 	perror(buffer);
 	va_end(args);
+
 	ourInstance->myDebugFile << buffer << std::endl;
 	ourInstance->myDebugFile.flush();
 }

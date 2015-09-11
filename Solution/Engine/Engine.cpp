@@ -43,7 +43,7 @@ void Engine::OnResize(int aWidth, int aHeigth)
 bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 {
 	DL_TIME_FUNCTION
-	//DL_BlockTimer test("Test");
+
 	if (WindowSetup(aHwnd, aWndProc) == false)
 	{
 		ENGINE_LOG("Failed to Create Window");

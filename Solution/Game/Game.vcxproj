@@ -39,14 +39,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\InputWrapper;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\Engine;$(SolutionDir)\CommonUtilities;$(SolutionDir)\Timer;$(SolutionDir)\DL_Debug;$(SolutionDir)..\DirectX\include\;$(SolutionDir)\InputWrapper;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\Libs\</OutDir>
     <IntDir>$(SolutionDir)..\temp\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -65,7 +65,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -89,6 +89,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
       <Project>{56e2c751-a07c-49d7-9073-839a5d0a71d2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\InputWrapper\InputWrapper.vcxproj">
+      <Project>{e6bd4153-64be-4109-8d3c-724baadab8af}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
