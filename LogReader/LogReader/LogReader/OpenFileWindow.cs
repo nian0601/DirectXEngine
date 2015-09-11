@@ -94,7 +94,7 @@ namespace LogReader
 
             for (int i = 0; i < filesInFolder.GetLength(0); ++i)
             {
-                if (filesInFolder[i].Extension == ".txt")
+                if (filesInFolder[i].Extension == ".txt" || filesInFolder[i].Extension == ".log")
                 {
                     logFiles[numberOfLogFiles] = filesInFolder[i];
                     ++numberOfLogFiles;

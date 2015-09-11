@@ -23,7 +23,10 @@ namespace LogReader
             this.Owner = aOwner;
             myFilters = aFilterList;
             InitializeComponent();
-            ToggleFilter_CreateFilterCheckBoxes();
+            if (myFilters != null)
+            {
+                ToggleFilter_CreateFilterCheckBoxes();
+            }
         }
 
         private void ToggleFilter_CreateFilterCheckBoxes()

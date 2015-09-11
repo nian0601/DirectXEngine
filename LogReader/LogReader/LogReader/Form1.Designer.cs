@@ -57,17 +57,23 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.LogFileTextWindow);
             this.panel1.Location = new System.Drawing.Point(12, 41);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(264, 330);
+            this.panel1.Size = new System.Drawing.Size(263, 327);
             this.panel1.TabIndex = 2;
             // 
             // LogFileTextWindow
             // 
-            this.LogFileTextWindow.Location = new System.Drawing.Point(4, 4);
+            this.LogFileTextWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LogFileTextWindow.Location = new System.Drawing.Point(0, 0);
             this.LogFileTextWindow.Name = "LogFileTextWindow";
-            this.LogFileTextWindow.Size = new System.Drawing.Size(257, 323);
+            this.LogFileTextWindow.Size = new System.Drawing.Size(259, 322);
             this.LogFileTextWindow.TabIndex = 0;
             this.LogFileTextWindow.Text = "";
             this.LogFileTextWindow.WordWrap = false;
@@ -76,12 +82,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(285, 384);
+            this.ClientSize = new System.Drawing.Size(284, 381);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.ToggleFilter_Btn);
             this.Controls.Add(this.Open_Btn);
+            this.MinimumSize = new System.Drawing.Size(300, 420);
             this.Name = "LogReaderApp";
-            this.Text = "LogReader v0.1";
+            this.Text = "LogReader";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

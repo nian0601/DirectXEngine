@@ -31,9 +31,10 @@ namespace LogReader
         
         public LogReaderApp()
         {
-            this.Name = "Log Reader v0.2";
             myOpenWindow = new OpenFileWindow(this, myFolderPath);
             InitializeComponent();
+            this.Name = "Log Reader";
+            this.Text = this.Name + " v0.3";
         }
 
         private void Open_Btn_Click(object sender, EventArgs e)
@@ -61,13 +62,25 @@ namespace LogReader
             {
                 string currentFilterTag = "";
                 bool currentFilteTagExists = false;
-                for (int j = 15; j < lines[i].Length; ++j)
+                int amountOfFoundTagStarts = 0;
+                for (int j = 0; j < lines[i].Length; ++j)
                 {
-                    if (lines[i][j] == ']')
+                    if (lines[i][j] == '[')
                     {
-                        break;
+                        ++amountOfFoundTagStarts;
                     }
-                    currentFilterTag += lines[i][j];
+                    if (amountOfFoundTagStarts == 2)
+                    {
+                        if (lines[i][j] == '[')
+                        {
+                            continue;
+                        }
+                        if (lines[i][j] == ']')
+                        {
+                            break;
+                        }
+                        currentFilterTag += lines[i][j];
+                    }
                 }
                 for (int k = 0; k < myNumberOfFiltes; ++k)
                 {
@@ -110,13 +123,21 @@ namespace LogReader
             {
                 string currentFilterTag = "";
                 bool allowedLine = false;
-                for (int j = 15; j < lines[i].Length; ++j)
+                int amountOfFoundTagStarts = 0;
+                for (int j = 0; j < lines[i].Length; ++j)
                 {
-                    if (lines[i][j] == ']')
+                    if (lines[i][j] == '[')
                     {
-                        break;
+                        ++amountOfFoundTagStarts;
                     }
-                    currentFilterTag += lines[i][j];
+                    if (amountOfFoundTagStarts == 2)
+                    {
+                        if (lines[i][j] == ']')
+                        {
+                            break;
+                        }
+                        currentFilterTag += lines[i][j];
+                    }
                 }
                 for (int k = 0; k < myNumberOfFiltes; ++k)
                 {
