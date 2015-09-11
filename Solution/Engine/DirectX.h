@@ -18,6 +18,9 @@ public:
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetContex();
 
+	void EnableZBuffer();
+	void DisableZBuffer();
+
 private:
 	void operator=(const DirectX&) = delete;
 
@@ -26,12 +29,16 @@ private:
 	bool D3DRenderTargetSetup();
 	bool D3DViewPortSetup(int aWidth, int aHeight);
 	bool D3DStencilBufferSetup(int aWidth, int aHeight);
+	bool D3DEnabledStencilStateSetup();
+	bool D3DDisabledStencilStateSetup();
 
 	ID3D11Device* myDevice;
 	ID3D11DeviceContext* myContext;
 	IDXGISwapChain* mySwapChain;
 	ID3D11RenderTargetView* myRenderTargetView;
 	ID3D11DepthStencilView* myDepthBufferView;
+	ID3D11DepthStencilState* myEnabledDepthStencilState;
+	ID3D11DepthStencilState* myDisabledDepthStencilState;
 	ID3D11Texture2D* myDepthBuffer;
 
 	HWND& myHWND;

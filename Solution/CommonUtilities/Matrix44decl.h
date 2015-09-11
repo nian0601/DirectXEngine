@@ -19,6 +19,7 @@ namespace CommonUtilities
 		static Matrix44<T> CreateRotateAroundZ(T aAngleInRadians);
 		static Matrix44<T> CreateReflectionMatrixAboutAxis(CU::Vector3<T> aReflectionVector);
 		static Matrix44<T> CreateProjectionMatrixLH(T aNearZ, T aFarZ, T aAspectRatio, T aFovAngle);
+		static Matrix44<T> CreateOrthogonalMatrixLH(T aWidth, T aHeight, T aNearZ, T aFarZ);
 
 		//not yet impl.
 		//void Rotate2D(T aRadian);

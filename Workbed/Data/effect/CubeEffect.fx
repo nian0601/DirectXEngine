@@ -60,24 +60,3 @@ technique11 Render
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }
-
-
-/*
-
-VS_OUTPUT VS(float4 Pos : POSITION, float2 Tex : TEXCOORD)
-{
-	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.Pos = mul(Pos, World);
-	output.Pos = mul(output.Pos, View);
-	output.Pos = mul(output.Pos, Projection);
-	output.Tex = Tex;
-	return output;
-}
-
-float4 PS(VS_OUTPUT input) : SV_Target
-{
-	float4 texColor = myTexture.Sample(samAnisotropic, input.Tex);
-	return texColor;
-}
-
-*/

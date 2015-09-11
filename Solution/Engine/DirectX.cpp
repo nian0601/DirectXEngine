@@ -32,7 +32,7 @@ void DirectX::OnResize(const int aWidth, const int aHeight)
 	myContext->OMSetRenderTargets(0, NULL, NULL);
 	myRenderTargetView->Release();
 	myContext->Flush();
-	mySwapChain->ResizeBuffers(1, aWidth, aHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	HRESULT result = mySwapChain->ResizeBuffers(1, aWidth, aHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 
 	D3DRenderTargetSetup();
 	D3DViewPortSetup(aWidth, aHeight);
@@ -55,6 +55,18 @@ void DirectX::CleanD3D()
 	myContext->Release();
 	myContext = nullptr;
 }
+
+void DirectX::EnableZBuffer()
+{
+	myContext->OMSetDepthStencilState(myEnabledDepthStencilState, 1);
+}
+
+void DirectX::DisableZBuffer()
+{
+	myContext->OMSetDepthStencilState(myDisabledDepthStencilState, 1);
+}
+
+
 
 bool DirectX::D3DSetup()
 {
@@ -82,6 +94,19 @@ bool DirectX::D3DSetup()
 		return false;
 	}
 
+	if (D3DEnabledStencilStateSetup() == false)
+	{
+		DIRECTX_LOG("Failed to Setup EnabledStencilBuffer");
+		return false;
+	}
+
+	if (D3DStencilBufferSetup(mySetupInfo.myScreenWidth, mySetupInfo.myScreenHeight) == false)
+	{
+		DIRECTX_LOG("Failed to Setup DisabledStencilBuffer");
+		return false;
+	}
+
+	EnableZBuffer();
 	
 	DIRECTX_LOG("DirectX Setup Successful");
 	return true;
@@ -185,6 +210,68 @@ bool DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 	stencilDesc.Texture2D.MipSlice = 0;
 
 	hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthBufferView);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool DirectX::D3DEnabledStencilStateSetup()
+{
+	HRESULT hr = S_OK;
+
+	D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+
+	stencilDesc.DepthEnable = true;
+	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	stencilDesc.StencilEnable = true;
+	stencilDesc.StencilReadMask = 0xFF;
+	stencilDesc.StencilWriteMask = 0xFF;
+	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myEnabledDepthStencilState);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool DirectX::D3DDisabledStencilStateSetup()
+{
+	HRESULT hr = S_OK;
+
+	D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+	
+	stencilDesc.DepthEnable = false;
+	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	stencilDesc.StencilEnable = true;
+	stencilDesc.StencilReadMask = 0xFF;
+	stencilDesc.StencilWriteMask = 0xFF;
+	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDisabledDepthStencilState);
 	if (FAILED(hr))
 	{
 		return false;

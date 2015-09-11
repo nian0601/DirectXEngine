@@ -324,6 +324,13 @@ void Model::Render(const CU::Matrix44<float>& aOrientation)
 {
 	if (myIsNULLObject == false)
 	{
+		float blendFactor[4];
+		blendFactor[0] = 0.f;
+		blendFactor[1] = 0.f;
+		blendFactor[2] = 0.f;
+		blendFactor[3] = 0.f;
+
+		myEffect->SetBlendState(NULL, blendFactor);
 		myEffect->SetWorldMatrix(aOrientation);
 
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);

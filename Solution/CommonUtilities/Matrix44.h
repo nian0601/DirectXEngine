@@ -393,4 +393,18 @@ namespace CommonUtilities
 
 		return temp;
 	}
+
+	template<typename T>
+	Matrix44<T> Matrix44<T>::CreateOrthogonalMatrixLH(T aWidth, T aHeight, T aNearZ, T aFarZ)
+	{
+		Matrix44 temp;
+
+		temp.myMatrix[0] = 2.f / aWidth;
+		temp.myMatrix[5] = 2.f / aHeight;
+		temp.myMatrix[10] = 1.f / (aFarZ - aNearZ);
+		temp.myMatrix[11] = -aNearZ / (aFarZ - aNearZ);
+		temp.myMatrix[15] = 1.f;
+
+		return temp;
+	}
 }

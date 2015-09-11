@@ -22,7 +22,8 @@ public:
 	EffectContainer& GetEffectContainer();
 	Model* LoadModel(const std::string& aPath, Effect* aEffect);
 
-
+	void EnableZBuffer();
+	void DisableZBuffer();
 private:
 	bool Init(HWND& aHwnd, WNDPROC aWndProc);
 	bool WindowSetup(HWND& aHwnd, WNDPROC aWindowProc);

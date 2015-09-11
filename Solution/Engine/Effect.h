@@ -19,6 +19,7 @@ public:
 	void SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix);
 	void SetViewMatrix(const CU::Matrix44<float>& aViewMatrix);
 	void SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix);
+	void SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask = 0xFFFFFFFF);
 	void UpdateLight(CU::StaticArray<CU::Vector4<float>, 1> someDirs, CU::StaticArray<CU::Vector4<float>, 1> someColors);
 	void UpdateTime(const float aDeltaTime);
 
@@ -66,4 +67,9 @@ inline void Effect::SetViewMatrix(const CU::Matrix44<float>& aViewMatrix)
 inline void Effect::SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix)
 {
 	myProjectionMatrixVariable->SetMatrix(&aProjectionMatrix.myMatrix[0]);
+}
+
+inline void Effect::SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask)
+{
+	Engine::GetInstance()->GetContex()->OMSetBlendState(aBlendState, aBlendFactor, aSampleMask);
 }

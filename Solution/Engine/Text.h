@@ -11,6 +11,8 @@ struct ID3D11InputLayout;
 struct VertexBufferWrapper;
 struct IndexBufferWrapper;
 
+
+
 class Text
 {
 public:
@@ -40,5 +42,7 @@ private:
 	Surface* mySurface;
 
 	CU::Matrix44<float> myOrientation;
+	CU::Matrix44<float>  myViewMatrix;
+	ID3D11BlendState* myBlendState;
 };
 

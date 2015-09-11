@@ -1,3 +1,4 @@
+
 Matrix World;
 Matrix View;
 Matrix Projection;
@@ -29,11 +30,13 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
-	output.Pos = mul(input.Pos, World);
-	output.Pos = mul(output.Pos, View);
-	output.Pos = mul(output.Pos, Projection);
+	//output.Pos = mul(input.Pos, World);
+	//output.Pos = mul(output.Pos, View);
+	output.Pos = mul(input.Pos, Projection);
+	output.Pos.x -= 1;
+	output.Pos.y += 1;
 	output.Tex = input.Tex;
-	
+
 	return output;
 }
 
@@ -41,8 +44,6 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 	float4 color = DiffuseTexture.Sample(linearSampling, input.Tex);
 
-	color.a = 1;
-	
 	return color;
 }
 
@@ -55,24 +56,3 @@ technique11 Render
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }
-
-
-/*
-
-VS_OUTPUT VS(float4 Pos : POSITION, float2 Tex : TEXCOORD)
-{
-	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.Pos = mul(Pos, World);
-	output.Pos = mul(output.Pos, View);
-	output.Pos = mul(output.Pos, Projection);
-	output.Tex = Tex;
-	return output;
-}
-
-float4 PS(VS_OUTPUT input) : SV_Target
-{
-	float4 texColor = myTexture.Sample(samAnisotropic, input.Tex);
-	return texColor;
-}
-
-*/

@@ -78,6 +78,16 @@ Model* Engine::LoadModel(const std::string& aPath, Effect* aEffect)
 	return model;
 }
 
+void Engine::EnableZBuffer()
+{
+	myDirectX->EnableZBuffer();
+}
+
+void Engine::DisableZBuffer()
+{
+	myDirectX->DisableZBuffer();
+}
+
 bool Engine::WindowSetup(HWND& aHwnd, WNDPROC aWindowProc)
 {
 	WNDCLASSEX wcex;

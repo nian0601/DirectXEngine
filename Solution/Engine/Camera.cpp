@@ -17,6 +17,7 @@ Camera::~Camera()
 void Camera::OnResize(const int aWidth, const int aHeight)
 {
 	myProjectionMatrix = CU::Matrix44<float>::CreateProjectionMatrixLH(0.1f, 1000.f, static_cast<float>(aWidth / aHeight), XM_PI * 0.5f);
+	myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(aWidth, aHeight, 0.1f, 1000.f);
 }
 
 CU::Matrix44<float>& Camera::GetOrientation()
@@ -32,6 +33,11 @@ CU::Vector3<float>& Camera::GetPosition()
 CU::Matrix44<float>& Camera::GetProjection()
 {
 	return myProjectionMatrix;
+}
+
+CU::Matrix44<float>& Camera::GetOrthogonal()
+{
+	return myOrthogonalMatrix;
 }
 
 void Camera::SetOrientation(const CU::Matrix44<float>& aOrientation)

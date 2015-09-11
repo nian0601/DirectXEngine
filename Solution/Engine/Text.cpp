@@ -9,6 +9,7 @@
 #include "Surface.h"
 #include "Camera.h"
 
+
 Text::Text()
 {
 }
@@ -20,6 +21,7 @@ Text::~Text()
 
 void Text::Init(Font* aFont)
 {
+
 	myEffect = Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/FontEffect.fx");
 	myFont = aFont;
 
@@ -44,7 +46,7 @@ void Text::Init(Font* aFont)
 	myVertexBuffer = nullptr;
 	myIndexBuffer = nullptr;
 	mySurface = new Surface();
-	UpdateSentence("   ", 0.f, 0.f);
+	UpdateSentence("   ", -400.f, 300.f);
 
 	InitSentence();
 	InitIndexBuffer();
@@ -56,12 +58,42 @@ void Text::Init(Font* aFont)
 	mySurface->SetVertexStart(0);
 	mySurface->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mySurface->SetTexture("DiffuseTexture", myFont->GetTexture());
+
+	D3D11_BLEND_DESC blendDesc;
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.IndependentBlendEnable = false;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+
+	hr = Engine::GetInstance()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
+	if (FAILED(hr) != S_OK)
+	{
+		int apa = 5;
+		++apa;
+	}
 }
 
 void Text::Render(Camera& aCamera)
 {
-	myEffect->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
-	myEffect->SetProjectionMatrix(aCamera.GetProjection());
+	Engine::GetInstance()->DisableZBuffer();
+
+	float blendFactor[4];
+	blendFactor[0] = 0.f;
+	blendFactor[1] = 0.f;
+	blendFactor[2] = 0.f;
+	blendFactor[3] = 0.f;
+
+	myEffect->SetBlendState(myBlendState, blendFactor);
+	//myEffect->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
+	myEffect->SetViewMatrix(myViewMatrix);
+	myEffect->SetProjectionMatrix(aCamera.GetOrthogonal());
 	myEffect->SetWorldMatrix(myOrientation);
 
 	Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
@@ -82,6 +114,8 @@ void Text::Render(Camera& aCamera)
 		myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, Engine::GetInstance()->GetContex());
 		Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
 	}
+
+	Engine::GetInstance()->EnableZBuffer();
 }
 
 void Text::InitSentence()
@@ -156,6 +190,7 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 	int index = 0;
 	float drawX = aDrawX;
 	float drawY = aDrawY;
+	float z = 1.f;
 	CU::Vector2<float> charSize = myFont->GetCharSize();
 
 	myVertices.RemoveAll();
@@ -168,14 +203,14 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 
 		//TopLeft
 		VertexPosUV vert;
-		vert.myPos = CU::Vector3<float>(drawX, drawY, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX, drawY, z);
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//BottomRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - 16.f, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z);
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
@@ -183,7 +218,7 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 
 
 		//BottomLeft
-		vert.myPos = CU::Vector3<float>(drawX, drawY - 16.f, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX, drawY - charSize.y, z);
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV.x, charData.myBottomRightUV.y);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
@@ -192,27 +227,28 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 		//Second Triangle
 
 		//TopLeft
-		vert.myPos = CU::Vector3<float>(drawX, drawY, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX, drawY, z);
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//TopRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY, z);
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV.x, charData.myTopLeftUV.y);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//BottomRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - 16.f, 0.f);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z);
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
-		drawX += charSize.x + 1.f;
+		drawX += charSize.x - 17.f;
+		z -= 0.001f;
 	}
 
 	InitSentence();

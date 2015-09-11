@@ -30,54 +30,51 @@ bool Game::Init(HWND& aHwnd)
 	myLight->SetLightDir({ 0.f, 0.5f, -1.f });
 	myInstances.Init(4);
 
-	//myWaveModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/Wave.fx"));
-	//myGravityModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/GravityWell.fx"));
-	//myExtrudeModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/Extrude.fx"));
-	//myNormalModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/BasicEffect.fx"));
-	//
-	//myPolygonModel = new Model();
-	//myPolygonModel->InitCube(3.f, 3.f, 3.f);
+	myWaveModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/Wave.fx"));
+	myGravityModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/GravityWell.fx"));
+	myExtrudeModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/Extrude.fx"));
+	myNormalModel = Engine::GetInstance()->LoadModel("Data/resources/model/companion/companion.fbx", Engine::GetInstance()->GetEffectContainer().GetEffect("Data/effect/BasicEffect.fx"));
+
 	
-	//myInstances.Add(new Instance(*myWaveModel));
-	//myInstances.Add(new Instance(*myGravityModel));
-	//myInstances.Add(new Instance(*myExtrudeModel));
-	//myInstances.Add(new Instance(*myNormalModel));
-	//myInstances.Add(new Instance(*myPolygonModel));
-	//myInstances.GetLast()->SetPosition({ 0.f, -15.f, 0.f });
+	myInstances.Add(new Instance(*myWaveModel));
+	myInstances.Add(new Instance(*myGravityModel));
+	myInstances.Add(new Instance(*myExtrudeModel));
+	myInstances.Add(new Instance(*myNormalModel));
+	myInstances.GetLast()->SetPosition({ 0.f, -15.f, 0.f });
 
 	//for (int i = 0; i < 1000; ++i)
 	//	myInstances.Add(new Instance(*myNormalModel));
 
-	//myInstances[0]->SetPosition({ -15.f, 0.f, 0.f });
-	//myInstances[2]->SetPosition({ 15.f, 0.f, 0.f });
-	//myInstances[3]->SetPosition({ 0.f, 15.f, 0.f });
+	myInstances[0]->SetPosition({ -15.f, 0.f, 0.f });
+	myInstances[2]->SetPosition({ 15.f, 0.f, 0.f });
+	myInstances[3]->SetPosition({ 0.f, 15.f, 0.f });
 
 	MeshData worldMesh;
 	GeometryGenerator::CreateGrid(500.f, 500.f, 100, 100, worldMesh);
 	myGeometryModel = new Model();
 	myGeometryModel->InitGeometry(worldMesh);
-	//myInstances.Add(new Instance(*myGeometryModel));
+	myInstances.Add(new Instance(*myGeometryModel));
 
 	myScene = new Scene();
 	myScene->SetCamera(&myCamera);
 	for (int i = 0; i < myInstances.Size(); ++i)
 		myScene->AddInstance(myInstances[i]);
 
-myScene->AddLight(myLight);
+	myScene->AddLight(myLight);
 
 
 
 
-Font* testFont = new Font();
-testFont->Init("Data/resources/font/font.dds");
+	Font* testFont = new Font();
+	testFont->Init("Data/resources/font/font.dds");
 
-myText = new Text();
-myText->Init(testFont);
+	myText = new Text();
+	myText->Init(testFont);
 
 
 
-GAME_LOG("Init Successful");
-return true;
+	GAME_LOG("Init Successful");
+	return true;
 }
 
 bool Game::Destroy()
@@ -89,7 +86,7 @@ bool Game::Update()
 {
 	DL_TIME_FUNCTION
 
-		myInputWrapper.Update();
+	myInputWrapper.Update();
 	CU::TimerManager::GetInstance()->Update();
 	float deltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
 
@@ -121,11 +118,9 @@ void Game::LogicUpdate(const float aDeltaTime)
 {
 	myLight->Update();
 	myLight->PerformRotation(CU::Matrix33<float>::CreateRotateAroundY(-0.005f * 3.14f / 180.f));
-	//myInstance->PerformRotationWorld(CU::Matrix44<float>::CreateRotateAroundY(0.005f * 3.14f / 180.f));		
-	//myInstance->PerformRotationWorld(CU::Matrix44<float>::CreateRotateAroundZ(0.005f * 3.14f / 180.f));
 
-	//myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX((720 * deltaTime) * 3.14f / 180.f));
-	//myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY((720 * deltaTime) * 3.14f / 180.f));
+	myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX((720 * aDeltaTime) * 3.14f / 180.f));
+	myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY((720 * aDeltaTime) * 3.14f / 180.f));
 
 	if (myInputWrapper.KeyIsPressed(DIK_UP))
 	{
