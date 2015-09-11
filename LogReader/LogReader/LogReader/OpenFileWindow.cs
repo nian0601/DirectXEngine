@@ -17,19 +17,33 @@ namespace LogReader
         private string myCurrentPath = "";
         public OpenFileWindow()
         {
-            
+
             InitializeComponent();
         }
 
-        public OpenFileWindow(Form aOwner)
+        public OpenFileWindow(Form aOwner, string aFilePathToStartAt)
         {
             this.Owner = aOwner;
             InitializeComponent();
+            myCurrentPath = aFilePathToStartAt;
+            if (myCurrentPath != "")
+            {
+                FolderPath_TxtBox.Text = myCurrentPath;
+                FolderBrowserDialog.SelectedPath = myCurrentPath;
+                RefreshLogFiles();
+            }
         }
 
         private void Cancel_Btn_Click(object sender, EventArgs e)
         {
+            LogReaderApp logReader = (LogReaderApp)this.Owner;
+            logReader.SetFolderPath(myCurrentPath);
+
             this.Visible = false;
+
+            logReader.Activate();
+            logReader.Visible = true;
+
             this.Dispose();
         }
 
@@ -48,7 +62,37 @@ namespace LogReader
 
             int numberOfLogFiles = 0;
 
-            for(int i = 0; i < filesInFolder.GetLength(0); ++i)
+            for (int i = 0; i < filesInFolder.GetLength(0); ++i)
+            {
+                if (filesInFolder[i].Extension == ".txt" || filesInFolder[i].Extension == ".log")
+                {
+                    logFiles[numberOfLogFiles] = filesInFolder[i];
+                    ++numberOfLogFiles;
+                }
+            }
+
+            for (int i = 0; i < logFiles.GetLength(0); ++i)
+            {
+                if (logFiles[i] != null)
+                {
+                    LogList.Items.Add(logFiles[i].Name);
+
+                }
+            }
+
+        }
+
+        private void RefreshLogFiles()
+        {
+            DirectoryInfo folderDirectory = new DirectoryInfo(myCurrentPath);
+
+            FileInfo[] filesInFolder = folderDirectory.GetFiles();
+
+            FileInfo[] logFiles = new FileInfo[filesInFolder.GetLength(0) + 1];
+
+            int numberOfLogFiles = 0;
+
+            for (int i = 0; i < filesInFolder.GetLength(0); ++i)
             {
                 if (filesInFolder[i].Extension == ".txt")
                 {
@@ -62,10 +106,9 @@ namespace LogReader
                 if (logFiles[i] != null)
                 {
                     LogList.Items.Add(logFiles[i].Name);
-                    
+
                 }
             }
-            
         }
 
         private void LogList_SelectedIndexChanged(object sender, EventArgs e)
@@ -77,9 +120,13 @@ namespace LogReader
         {
             LogReaderApp logReader = (LogReaderApp)this.Owner;
             logReader.SetFilePath(myCurrentPath + "\\" + myCurrentLogFile);
+            logReader.SetFolderPath(myCurrentPath);
+
             this.Visible = false;
+
             logReader.Activate();
             logReader.Visible = true;
+
             this.Dispose();
         }
 

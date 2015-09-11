@@ -18,3 +18,4 @@ C:\Users\stdaca1\Desktop\DirectXEngine\LogReader\LogReader\LogReader\obj\Debug\L
 C:\Users\stdaca1\Desktop\DirectXEngine\LogReader\LogReader\LogReader\obj\Debug\LogReader.Properties.Resources.resources
 C:\Users\stdaca1\Desktop\DirectXEngine\LogReader\LogReader\LogReader\obj\Debug\LogReader.ToggleFilter.resources
 C:\Users\stdaca1\Desktop\DirectXEngine\LogReader\LogReader\LogReader\obj\Debug\LogReader.csproj.GenerateResource.Cache
+C:\Users\stdaca1\Desktop\DirectXEngine\LogReader\LogReader\LogReader\obj\Debug\LogReader.csprojResolveAssemblyReference.cache

@@ -23,6 +23,7 @@ namespace LogReader
         private ToggleFilter myToggleFilterWindow;
 
         private string myFilePath = "";
+        private string myFolderPath = "";
         private FileInfo myCurrentFileInfo;
 
         private int myNumberOfFiltes = 0;
@@ -30,14 +31,14 @@ namespace LogReader
         
         public LogReaderApp()
         {
-            this.Name = "Log Reader v0.1";
-            myOpenWindow = new OpenFileWindow(this);
+            this.Name = "Log Reader v0.2";
+            myOpenWindow = new OpenFileWindow(this, myFolderPath);
             InitializeComponent();
         }
 
         private void Open_Btn_Click(object sender, EventArgs e)
         {
-            myOpenWindow = new OpenFileWindow(this);
+            myOpenWindow = new OpenFileWindow(this, myFolderPath);
             myOpenWindow.Activate();
             myOpenWindow.Visible = true;
         }
@@ -83,6 +84,11 @@ namespace LogReader
                     ++myNumberOfFiltes;
                 }
             }
+        }
+
+        public void SetFolderPath(string aFolderPath)
+        {
+            myFolderPath = aFolderPath;
         }
 
         private void ToggleFilter_Btn_Click(object sender, EventArgs e)
