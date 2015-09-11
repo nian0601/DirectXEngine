@@ -3,6 +3,7 @@
 #include "TextureContainer.h"
 #include "EffectContainer.h"
 #include "FBXFactory.h"
+#include "DebugDataDisplay.h"
 
 class DirectX;
 struct SetupInfo;
@@ -20,6 +21,7 @@ public:
 	ID3D11DeviceContext* GetContex();
 	TextureContainer& GetTextureContainer();
 	EffectContainer& GetEffectContainer();
+	DebugDataDisplay& GetDebugDisplay();
 	Model* LoadModel(const std::string& aPath, Effect* aEffect);
 
 	void EnableZBuffer();
@@ -34,6 +36,7 @@ private:
 	TextureContainer myTextureContainer;
 	EffectContainer myEffectContainer;
 	FBXFactory myModelFactory;
+	DebugDataDisplay myDebugDataDisplay;
 
 	static Engine* myInstance;
 };
@@ -56,4 +59,9 @@ inline TextureContainer& Engine::GetTextureContainer()
 inline EffectContainer& Engine::GetEffectContainer()
 {
 	return myEffectContainer;
+}
+
+inline DebugDataDisplay& Engine::GetDebugDisplay()
+{
+	return myDebugDataDisplay;
 }

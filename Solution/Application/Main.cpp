@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		return 1;
 	}
 
-
+	OnResize();
 
 	MSG msg;
 	while (1)
@@ -95,7 +95,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		}
 		else
 		{
-			//Engine::GetInstance()->BeginScene();
 
 			if (globalGame->Update() == false)
 			{
@@ -103,7 +102,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 			}
 
 			Engine::GetInstance()->Render();
-			//Engine::GetInstance()->EndScene();
 		}
 	}
 

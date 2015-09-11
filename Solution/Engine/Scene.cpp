@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Light.h"
 
+#include "DebugDataDisplay.h"
 
 
 Scene::Scene()
@@ -18,7 +19,8 @@ Scene::~Scene()
 
 void Scene::Render()
 {
-	DL_TIME_FUNCTION
+	TIME_FUNCTION
+
 	for (int i = 0; i < 1; ++i)
 	{
 		myDirections[i] = myLights[i]->GetCurrentLightDir();

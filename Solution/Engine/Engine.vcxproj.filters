@@ -33,6 +33,12 @@
     <ClCompile Include="Text.cpp">
       <Filter>Text</Filter>
     </ClCompile>
+    <ClCompile Include="DebugDataDisplay.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug_BlockTimer.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -83,6 +89,12 @@
     <ClInclude Include="Text.h">
       <Filter>Text</Filter>
     </ClInclude>
+    <ClInclude Include="DebugDataDisplay.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug_BlockTimer.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -99,6 +111,9 @@
     </Filter>
     <Filter Include="Text">
       <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DebugServices">
+      <UniqueIdentifier>{351a3e6e-50d2-43e1-823e-641c1538baa2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

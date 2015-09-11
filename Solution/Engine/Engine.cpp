@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "DirectX.h"
 #include "Model.h"
+#include "DebugDataDisplay.h"
+
 #include <DL_Debug.h>
 #include <TimerManager.h>
 
@@ -28,7 +30,8 @@ void Engine::Shutdown()
 
 void Engine::Render()
 {
-	DL_TIME_FUNCTION
+	TIME_FUNCTION
+
 	myDirectX->Present(0, 0);
 
 	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
@@ -42,7 +45,7 @@ void Engine::OnResize(int aWidth, int aHeigth)
 
 bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 {
-	DL_TIME_FUNCTION
+	TIME_FUNCTION
 
 	if (WindowSetup(aHwnd, aWndProc) == false)
 	{
@@ -59,6 +62,8 @@ bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 
 	ShowWindow(aHwnd, 10);
 	UpdateWindow(aHwnd);
+
+	myDebugDataDisplay.Init();
 
 	ENGINE_LOG("Engine Init Successful");
 	return true;

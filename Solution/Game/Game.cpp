@@ -10,6 +10,7 @@
 
 #include <Font.h>
 #include <Text.h>
+#include <DebugDataDisplay.h>
 
 Game::Game()
 {
@@ -26,7 +27,7 @@ bool Game::Init(HWND& aHwnd)
 	myInputWrapper.Init(aHwnd, GetModuleHandle(NULL), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myLight = new Light();
-	myLight->SetLightColor({ 1.f, 0.3f, 0.3f, 1.f });
+	myLight->SetLightColor({ 1.f, 0.6f, 0.6f, 1.f });
 	myLight->SetLightDir({ 0.f, 0.5f, -1.f });
 	myInstances.Init(4);
 
@@ -38,16 +39,17 @@ bool Game::Init(HWND& aHwnd)
 	
 	myInstances.Add(new Instance(*myWaveModel));
 	myInstances.Add(new Instance(*myGravityModel));
-	myInstances.Add(new Instance(*myExtrudeModel));
+	//myInstances.Add(new Instance(*myExtrudeModel));
 	myInstances.Add(new Instance(*myNormalModel));
-	myInstances.GetLast()->SetPosition({ 0.f, -15.f, 0.f });
+	myInstances.GetLast()->SetPosition({ 0.f, 25.f, 0.f });
 
 	//for (int i = 0; i < 1000; ++i)
 	//	myInstances.Add(new Instance(*myNormalModel));
 
-	myInstances[0]->SetPosition({ -15.f, 0.f, 0.f });
-	myInstances[2]->SetPosition({ 15.f, 0.f, 0.f });
-	myInstances[3]->SetPosition({ 0.f, 15.f, 0.f });
+	myInstances[0]->SetPosition({ -15.f, 10.f, 0.f });
+	myInstances[1]->SetPosition({ 0.f, 10.f, 0.f });
+	//myInstances[2]->SetPosition({ 15.f, 0.f, 0.f });
+	//myInstances[3]->SetPosition({ 0.f, 15.f, 0.f });
 
 	MeshData worldMesh;
 	GeometryGenerator::CreateGrid(500.f, 500.f, 100, 100, worldMesh);
@@ -84,7 +86,7 @@ bool Game::Destroy()
 
 bool Game::Update()
 {
-	DL_TIME_FUNCTION
+	TIME_FUNCTION
 
 	myInputWrapper.Update();
 	CU::TimerManager::GetInstance()->Update();
@@ -96,7 +98,9 @@ bool Game::Update()
 
 	myScene->Render();
 
-	myText->Render(myCamera);
+	//myText->Render(myCamera);
+
+	Engine::GetInstance()->GetDebugDisplay().Render(myCamera);
 
 	return true;
 }
@@ -119,8 +123,8 @@ void Game::LogicUpdate(const float aDeltaTime)
 	myLight->Update();
 	myLight->PerformRotation(CU::Matrix33<float>::CreateRotateAroundY(-0.005f * 3.14f / 180.f));
 
-	myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX((720 * aDeltaTime) * 3.14f / 180.f));
-	myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY((720 * aDeltaTime) * 3.14f / 180.f));
+	//myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX((720 * aDeltaTime) * 3.14f / 180.f));
+	//myInstances[3]->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY((720 * aDeltaTime) * 3.14f / 180.f));
 
 	if (myInputWrapper.KeyIsPressed(DIK_UP))
 	{

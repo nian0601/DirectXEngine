@@ -27,9 +27,6 @@
     <ClInclude Include="StackWalker\StackWalker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DL_BlockTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DL_Debug.cpp">
@@ -39,9 +36,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StackWalker\StackWalker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DL_BlockTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

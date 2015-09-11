@@ -23,7 +23,7 @@ public:
 
 	void Render(Camera& aCamera);
 
-	void UpdateSentence(char* aString, const float aDrawX, const float aDrawY);
+	void UpdateSentence(const char* aString, const float aDrawX, const float aDrawY);
 private:
 
 	void InitSentence();

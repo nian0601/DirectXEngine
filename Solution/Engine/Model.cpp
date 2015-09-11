@@ -322,6 +322,8 @@ Effect* Model::GetEffect()
 
 void Model::Render(const CU::Matrix44<float>& aOrientation)
 {
+	TIME_FUNCTION
+
 	if (myIsNULLObject == false)
 	{
 		float blendFactor[4];

@@ -46,7 +46,7 @@ void Text::Init(Font* aFont)
 	myVertexBuffer = nullptr;
 	myIndexBuffer = nullptr;
 	mySurface = new Surface();
-	UpdateSentence("   ", -400.f, 300.f);
+	UpdateSentence("   ", 0.f, 0.f);
 
 	InitSentence();
 	InitIndexBuffer();
@@ -184,13 +184,14 @@ void Text::InitIndexBuffer()
 	myIndexBuffer->myByteOffset = 0;
 }
 
-void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
+void Text::UpdateSentence(const char* aString, const float aDrawX, const float aDrawY)
 {
 	int numOfLetters = static_cast<int>(strlen(aString));
 	int index = 0;
 	float drawX = aDrawX;
 	float drawY = aDrawY;
 	float z = 1.f;
+	float scale = 1.f;
 	CU::Vector2<float> charSize = myFont->GetCharSize();
 
 	myVertices.RemoveAll();
@@ -203,14 +204,14 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 
 		//TopLeft
 		VertexPosUV vert;
-		vert.myPos = CU::Vector3<float>(drawX, drawY, z);
+		vert.myPos = CU::Vector3<float>(drawX, drawY, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//BottomRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
@@ -218,7 +219,7 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 
 
 		//BottomLeft
-		vert.myPos = CU::Vector3<float>(drawX, drawY - charSize.y, z);
+		vert.myPos = CU::Vector3<float>(drawX, drawY - charSize.y, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV.x, charData.myBottomRightUV.y);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
@@ -227,21 +228,21 @@ void Text::UpdateSentence(char* aString, const float aDrawX, const float aDrawY)
 		//Second Triangle
 
 		//TopLeft
-		vert.myPos = CU::Vector3<float>(drawX, drawY, z);
+		vert.myPos = CU::Vector3<float>(drawX, drawY, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myTopLeftUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//TopRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY, z);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV.x, charData.myTopLeftUV.y);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);
 		++index;
 
 		//BottomRight
-		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z);
+		vert.myPos = CU::Vector3<float>(drawX + charSize.x, drawY - charSize.y, z) * scale;
 		vert.myUV = CU::Vector2<float>(charData.myBottomRightUV);
 		myVertices.Add(vert);
 		myVerticeIndices.Add(index);

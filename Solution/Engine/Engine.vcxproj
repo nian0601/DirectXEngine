@@ -102,6 +102,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugDataDisplay.cpp" />
+    <ClCompile Include="Debug_BlockTimer.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
@@ -125,6 +127,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugDataDisplay.h" />
+    <ClInclude Include="Debug_BlockTimer.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />

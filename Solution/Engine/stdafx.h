@@ -4,10 +4,10 @@
 
 #include <Windows.h>
 #include <string>
-#include <Vector.h>
 #include <D3DX11tex.h>
 #include <DL_Debug.h>
 #include "DirectX.h"
 #include "Engine.h"
 
 #include "targetver.h"
+#include <Vector.h>
