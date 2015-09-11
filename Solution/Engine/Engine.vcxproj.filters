@@ -27,6 +27,12 @@
       <Filter>FBX</Filter>
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="Font.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -71,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="Effect.h" />
     <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="Font.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -84,6 +96,9 @@
     </Filter>
     <Filter Include="FBX">
       <UniqueIdentifier>{923b2b8b-c8a5-41fb-891a-0d4653b552b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

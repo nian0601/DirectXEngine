@@ -26,6 +26,7 @@ public:
 	void SetIndexCount(const int aCount);
 
 	bool SetTexture(const std::string& aResourceName, const std::string& aFileName, const bool aUseSRGB);
+	bool SetTexture(const std::string& aResourceName, Texture* aTexture);
 
 	void Activate();
 

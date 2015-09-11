@@ -7,6 +7,7 @@
 class Scene;
 class Instance;
 class Light;
+class Text;
 class Game
 {
 public:
@@ -39,5 +40,7 @@ private:
 	Camera myCamera;
 	Light* myLight;
 	CU::Matrix44<float> myWorldMatrix;
+
+	Text* myText;
 };
 

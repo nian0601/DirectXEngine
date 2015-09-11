@@ -36,6 +36,21 @@ bool Surface::SetTexture(const std::string& aResourceName, const std::string& aF
 	return true;
 }
 
+bool Surface::SetTexture(const std::string& aResourceName, Texture* aTexture)
+{
+	ID3DX11EffectShaderResourceVariable* shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+	if (shaderVar->IsValid() == false)
+	{
+		DL_MESSAGE_BOX("Failed to get ShaderResource", "Surface Error", MB_ICONWARNING);
+		return false;
+	}
+
+	myTextures.Add(aTexture);
+	myShaderViews.Add(shaderVar);
+
+	return true;
+}
+
 void Surface::Activate()
 {
 	Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(myPrimitiveTopologyType);

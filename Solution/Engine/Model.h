@@ -12,7 +12,6 @@ struct IndexBufferWrapper;
 struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct VertexIndexWrapper;
-struct ID3DX11EffectShaderResourceVariable;
 
 class Model
 {

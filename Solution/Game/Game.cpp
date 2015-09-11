@@ -8,6 +8,9 @@
 
 #include <GeometryGenerator.h>
 
+#include <Font.h>
+#include <Text.h>
+
 Game::Game()
 {
 
@@ -53,17 +56,28 @@ bool Game::Init(HWND& aHwnd)
 	GeometryGenerator::CreateGrid(500.f, 500.f, 100, 100, worldMesh);
 	myGeometryModel = new Model();
 	myGeometryModel->InitGeometry(worldMesh);
-	myInstances.Add(new Instance(*myGeometryModel));
+	//myInstances.Add(new Instance(*myGeometryModel));
 
 	myScene = new Scene();
 	myScene->SetCamera(&myCamera);
 	for (int i = 0; i < myInstances.Size(); ++i)
 		myScene->AddInstance(myInstances[i]);
 
-	myScene->AddLight(myLight);
+myScene->AddLight(myLight);
 
-	GAME_LOG("Init Successful");
-	return true;
+
+
+
+Font* testFont = new Font();
+testFont->Init("Data/resources/font/font.dds");
+
+myText = new Text();
+myText->Init(testFont);
+
+
+
+GAME_LOG("Init Successful");
+return true;
 }
 
 bool Game::Destroy()
@@ -75,7 +89,7 @@ bool Game::Update()
 {
 	DL_TIME_FUNCTION
 
-	myInputWrapper.Update();
+		myInputWrapper.Update();
 	CU::TimerManager::GetInstance()->Update();
 	float deltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
 
@@ -84,6 +98,8 @@ bool Game::Update()
 	LogicUpdate(deltaTime);
 
 	myScene->Render();
+
+	myText->Render(myCamera);
 
 	return true;
 }
@@ -143,5 +159,19 @@ void Game::LogicUpdate(const float aDeltaTime)
 	if (myInputWrapper.KeyIsPressed(DIK_D))
 	{
 		myCamera.MoveRight(100.f * aDeltaTime);
+	}
+
+
+	if (myInputWrapper.KeyDown(DIK_I))
+	{
+		myText->UpdateSentence("Pressed I", 0.f, 0.f);
+	}
+	else if (myInputWrapper.KeyDown(DIK_Y))
+	{
+		myText->UpdateSentence("Pressed Y", 0.f, 0.f);
+	}
+	else if (myInputWrapper.KeyDown(DIK_U))
+	{
+		myText->UpdateSentence("Now I pressed U", 0.f, 0.f);
 	}
 }
