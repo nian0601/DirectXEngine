@@ -2,6 +2,7 @@
 #define TIME_FUNCTION Debug_BlockTimer funcTimer__(__FUNCTION__);
 
 #include "Debug_BlockTimer.h"
+#include "GraphRenderer.h"
 
 #include <unordered_map>
 #include <bitset>
@@ -9,6 +10,7 @@
 
 class Text;
 class Camera;
+class Font;
 
 class DebugDataDisplay
 {
@@ -38,10 +40,13 @@ private:
 	};
 	struct FunctionData
 	{
-		int myHitCount;
-		unsigned long long myStart;
-		unsigned long long myEnd;
-		bool myEnabled;
+		int myHitCount = 0;
+		unsigned long long myStart = 0;
+		unsigned long long myEnd = 0;
+		bool myEnabled = false;
+		Text* myNameText = nullptr;
+		Text* myTimeText = nullptr;
+		std::string myNameString;
 	};
 
 	void RenderFunctionTimers(Camera& aCamera);
@@ -58,6 +63,7 @@ private:
 
 	std::unordered_map<std::string, FunctionData> myFunctionTimers;
 	Text* myText;
+	Font* myFont;
 	unsigned long long myFrequency;
 	FILETIME myPrevSysKernel;
 	FILETIME myPrevSysUser;
@@ -71,6 +77,13 @@ private:
 	CU::Vector2<float> myCPUUSageStartPos;
 	CU::Vector2<float> myFrameTimeStartPos;
 	float myTextScale;
+	float myFuncTimerY;
+
+	GraphRenderer myGraphRenderer;
+	CU::GrowingArray<float> myFrameTimes;
+	int myFrameTimeIndex;
+	float mySampleTimer;
+	bool myNewGraphData;
 };
 
 inline void DebugDataDisplay::ToggleFunctionTimers()

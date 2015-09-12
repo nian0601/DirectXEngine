@@ -115,6 +115,7 @@
     </ClCompile>
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="GraphRenderer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="FBX\FbxLoader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="GraphRenderer.h" />
     <ClInclude Include="IndexBufferWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Light.h" />

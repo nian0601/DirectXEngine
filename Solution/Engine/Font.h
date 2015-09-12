@@ -3,8 +3,6 @@
 class Texture;
 class Font
 {
-	
-
 public:
 	struct CharacterData
 	{

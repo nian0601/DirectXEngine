@@ -13,6 +13,9 @@ DebugDataDisplay::DebugDataDisplay()
 	, myCPUUSageStartPos(1000.f, -30.f)
 	, myFrameTimeStartPos(1000.f, -60.f)
 	, myTextScale(0.75f)
+	, myFrameTimeIndex(0)
+	, mySampleTimer(1.f)
+	, myNewGraphData(true)
 {
 }
 
@@ -23,22 +26,38 @@ DebugDataDisplay::~DebugDataDisplay()
 
 void DebugDataDisplay::Init()
 {
-	Font* font = new Font();
-	font->Init("Data/resources/font/font.dds");
+	myFont = new Font();
+	myFont->Init("Data/resources/font/font.dds");
 
 	myText = new Text();
-	myText->Init(font);
+	myText->Init(myFont);
 
 	LARGE_INTEGER largeInteger;
 	QueryPerformanceFrequency(&largeInteger);
 	myFrequency = largeInteger.QuadPart;
 
 	GetCPUUsage(&myPrevSysKernel, &myPrevSysUser, &myPrevProcKernel, &myPrevProcUser, true);
+
+	myGraphRenderer.Init();
+	myFrameTimes.Init(60);
 }
 
 void DebugDataDisplay::AddFunctionTime(const std::string& aFunc, const unsigned long long aStartTime, const unsigned long long aEndTime)
 {
 	FunctionData& it = myFunctionTimers[aFunc];
+
+	if (it.myNameText == nullptr)
+	{
+		it.myNameText = new Text();
+		it.myNameText->Init(myFont);
+	
+		std::stringstream ss;
+		ss << aFunc << ":" << std::endl;
+		it.myNameString = ss.str();
+	
+		it.myTimeText = new Text();
+		it.myTimeText->Init(myFont);
+	}
 
 	it.myStart = aStartTime;
 	it.myEnd = aEndTime;
@@ -48,6 +67,28 @@ void DebugDataDisplay::AddFunctionTime(const std::string& aFunc, const unsigned 
 
 void DebugDataDisplay::Render(Camera& aCamera, const float aDeltaTime)
 {
+	myNewGraphData = false;
+	mySampleTimer += aDeltaTime;
+	if (mySampleTimer > 0.1f)
+	{
+		myNewGraphData = true;
+		mySampleTimer = 0.f;
+
+		if (myFrameTimes.Size() < 60)
+		{
+			myFrameTimes.Add(aDeltaTime * 1000.f);
+			myFrameTimeIndex;
+		}
+		else
+		{
+			if (myFrameTimeIndex >= myFrameTimes.Size())
+				myFrameTimeIndex = 0;
+
+			myFrameTimes[myFrameTimeIndex] = aDeltaTime * 1000.f;
+			++myFrameTimeIndex;
+		}
+	}
+
 	if (myDisplayStatuses.at(eDisplays::FUNCTION_TIMERS))
 	{
 		RenderFunctionTimers(aCamera);
@@ -80,25 +121,57 @@ void DebugDataDisplay::RenderFunctionTimers(Camera& aCamera)
 		if (it->second.myEnabled == true)
 		{
 			float ms = static_cast<float>(((it->second.myEnd * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
-			std::stringstream ss;
-			ss << it->first << ": " << ms << " ms";
+			if (ms < 0.005f)
+				ms = 0.f;
+
+			std::stringstream timeSS;
+			timeSS << ms << " ms";
 			if (it->second.myHitCount > 1)
-				ss << " (" << it->second.myHitCount << " calls)";
+				timeSS << " (" << it->second.myHitCount << " calls)";
 
-			ss << std::endl;
+			timeSS << std::endl;
 
-			myText->UpdateSentence(ss.str().c_str(), drawPos.x, drawPos.y, myTextScale);
-			myText->Render(aCamera);
+			it->second.myNameText->UpdateSentence(it->second.myNameString.c_str(), drawPos.x, drawPos.y, myTextScale);
+			it->second.myNameText->Render(aCamera);
+
+			it->second.myTimeText->UpdateSentence(timeSS.str().c_str(), drawPos.x + it->second.myNameText->GetTextWidth() + 10.f, drawPos.y, myTextScale);
+			it->second.myTimeText->Render(aCamera);
+
 			drawPos.y -= 30.f;
 
-			FUNCTION_TIMER_LOG("%s", ss.str().c_str());
-
-			ss.clear();
+			//FUNCTION_TIMER_LOG("%s took %s", it->second.myNameString.c_str(), timeSS.str().c_str());
 
 			it->second.myEnabled = false;
 			it->second.myHitCount = 0;
 		}
 	}
+
+
+	//CU::Vector2<float> drawPos = myFunctionTimersStartPos;
+	//
+	//for (auto it = myFunctionTimers.begin(); it != myFunctionTimers.end(); ++it)
+	//{
+	//	if (it->second.myEnabled == true)
+	//	{
+	//		float ms = static_cast<float>(((it->second.myEnd * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
+	//		
+	//		float timeDrawX = drawPos.x + it->second.myNameText->GetTextWidth() + 10.f;
+	//
+	//		std::stringstream timeSS;
+	//		timeSS << ms << "ms" << std::endl;
+	//		it->second.myTimeText->UpdateSentence(timeSS.str().c_str(), timeDrawX, drawPos.y - it->second.myDrawY, myTextScale);
+	//
+	//
+	//		it->second.myNameText->Render(aCamera);
+	//		it->second.myTimeText->Render(aCamera);
+	//
+	//		//FUNCTION_TIMER_LOG("%s", ss.str().c_str());
+	//
+	//
+	//		it->second.myEnabled = false;
+	//		it->second.myHitCount = 0;
+	//	}
+	//}
 }
 
 void DebugDataDisplay::RenderMemoryUsage(Camera& aCamera)
@@ -127,7 +200,7 @@ void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
 {
 	TIME_FUNCTION
 
-	int FPS = 1.f / aDeltaTime;
+	float FPS = 1.f / aDeltaTime;
 	std::stringstream fpsSS;
 	fpsSS << "FPS: " << FPS << std::endl;
 
@@ -141,15 +214,16 @@ void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
 
 	myText->UpdateSentence(frameTimeSS.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y - 30.f, myTextScale);
 	myText->Render(aCamera);
+
+	float graphHeight = 100.f;
+	myGraphRenderer.Render(aCamera, myFrameTimes, { myFrameTimeStartPos.x - 300.f, myFrameTimeStartPos.y - 30.f }, { 300.f, graphHeight }, 16.f, myNewGraphData);
 }
 
 
 int DebugDataDisplay::GetMemoryUsageMB()
 {
 	PROCESS_MEMORY_COUNTERS memCounter;
-	BOOL result = GetProcessMemoryInfo(GetCurrentProcess(),
-		&memCounter,
-		sizeof(memCounter));
+	GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
 
 	//int memUsed = memCounter.WorkingSetSize / 1024;
 	int memUsedMb = memCounter.WorkingSetSize / 1024 / 1024;
