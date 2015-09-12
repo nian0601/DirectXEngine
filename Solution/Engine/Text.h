@@ -23,12 +23,14 @@ public:
 
 	void Render(Camera& aCamera);
 
-	void UpdateSentence(const char* aString, const float aDrawX, const float aDrawY);
+	void UpdateSentence(const char* aString, const float aDrawX, const float aDrawY, const float aScale = 1.f);
 private:
 
 	void InitSentence();
-	void InitVertexBuffer();
-	void InitIndexBuffer();
+	void SetupVertexBuffer();
+	void SetupIndexBuffer();
+
+	void UpdateSurface();
 
 
 	Font* myFont;
@@ -41,8 +43,9 @@ private:
 	VertexBufferWrapper* myVertexBuffer;
 	Surface* mySurface;
 
-	CU::Matrix44<float> myOrientation;
-	CU::Matrix44<float>  myViewMatrix;
+	CU::Matrix44<float>  myIdentityMatrix;
 	ID3D11BlendState* myBlendState;
+
+	bool myHasText;
 };
 

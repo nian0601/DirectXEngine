@@ -33,6 +33,11 @@ void DirectX::OnResize(const int aWidth, const int aHeight)
 	myRenderTargetView->Release();
 	myContext->Flush();
 	HRESULT result = mySwapChain->ResizeBuffers(1, aWidth, aHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	if (FAILED(result) != S_OK)
+	{
+		DIRECTX_LOG("Failed to Resize SwapChain Buffers");
+		DL_MESSAGE_BOX("Failed to Resize SwapChain Buffers", "DirectX: SwapChain", MB_ICONWARNING);
+	}
 
 	D3DRenderTargetSetup();
 	D3DViewPortSetup(aWidth, aHeight);

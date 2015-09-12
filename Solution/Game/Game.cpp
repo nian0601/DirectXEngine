@@ -91,16 +91,31 @@ bool Game::Update()
 	myInputWrapper.Update();
 	CU::TimerManager::GetInstance()->Update();
 	float deltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
-
 	Engine::GetInstance()->GetEffectContainer().Update(deltaTime);
+
+
+	if (myInputWrapper.KeyDown(DIK_F5))
+	{
+		Engine::GetInstance()->GetDebugDisplay().ToggleFunctionTimers();
+	}
+	else if (myInputWrapper.KeyDown(DIK_F6))
+	{
+		Engine::GetInstance()->GetDebugDisplay().ToggleMemoryUsage();
+	}
+	else if (myInputWrapper.KeyDown(DIK_F7))
+	{
+		Engine::GetInstance()->GetDebugDisplay().ToggleCPUUsage();
+	}
+	else if (myInputWrapper.KeyDown(DIK_F8))
+	{
+		Engine::GetInstance()->GetDebugDisplay().ToggleFrameTime();
+	}
 
 	LogicUpdate(deltaTime);
 
 	myScene->Render();
 
-	//myText->Render(myCamera);
-
-	Engine::GetInstance()->GetDebugDisplay().Render(myCamera);
+	Engine::GetInstance()->GetDebugDisplay().Render(myCamera, deltaTime);
 
 	return true;
 }
@@ -158,19 +173,5 @@ void Game::LogicUpdate(const float aDeltaTime)
 	if (myInputWrapper.KeyIsPressed(DIK_D))
 	{
 		myCamera.MoveRight(100.f * aDeltaTime);
-	}
-
-
-	if (myInputWrapper.KeyDown(DIK_I))
-	{
-		myText->UpdateSentence("Pressed I", 0.f, 0.f);
-	}
-	else if (myInputWrapper.KeyDown(DIK_Y))
-	{
-		myText->UpdateSentence("Pressed Y", 0.f, 0.f);
-	}
-	else if (myInputWrapper.KeyDown(DIK_U))
-	{
-		myText->UpdateSentence("Now I pressed U", 0.f, 0.f);
 	}
 }

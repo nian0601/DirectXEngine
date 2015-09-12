@@ -17,7 +17,7 @@ Camera::~Camera()
 void Camera::OnResize(const int aWidth, const int aHeight)
 {
 	myProjectionMatrix = CU::Matrix44<float>::CreateProjectionMatrixLH(0.1f, 1000.f, static_cast<float>(aWidth / aHeight), XM_PI * 0.5f);
-	myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(aWidth, aHeight, 0.1f, 1000.f);
+	myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(aWidth), static_cast<float>(aHeight), 0.1f, 1000.f);
 }
 
 CU::Matrix44<float>& Camera::GetOrientation()
@@ -53,6 +53,8 @@ void Camera::SetPosition(const CU::Vector3<float>& aPosition)
 
 void Camera::RotateX(const float aDegrees)
 {
+	TIME_FUNCTION
+
 	myPosition = myOrientation.GetPos();
 	myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 	myOrientation = CU::Matrix44<float>::CreateRotateAroundX(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -61,6 +63,8 @@ void Camera::RotateX(const float aDegrees)
 
 void Camera::RotateY(const float aDegrees)
 {
+	TIME_FUNCTION
+
 	myPosition = myOrientation.GetPos();
 	myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 	myOrientation = CU::Matrix44<float>::CreateRotateAroundY(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -69,6 +73,8 @@ void Camera::RotateY(const float aDegrees)
 
 void Camera::RotateZ(const float aDegrees)
 {
+	TIME_FUNCTION
+
 	myPosition = myOrientation.GetPos();
 	myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 	myOrientation = CU::Matrix44<float>::CreateRotateAroundZ(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -77,12 +83,16 @@ void Camera::RotateZ(const float aDegrees)
 
 void Camera::MoveForward(const float aDistance)
 {
+	TIME_FUNCTION
+
 	myPosition += myOrientation.GetForward() * aDistance;
 	myOrientation.SetPos(myPosition);
 }
 
 void Camera::MoveRight(const float aDistance)
 {
+	TIME_FUNCTION
+
 	myPosition += myOrientation.GetRight() * aDistance;
 	myOrientation.SetPos(myPosition);
 }
