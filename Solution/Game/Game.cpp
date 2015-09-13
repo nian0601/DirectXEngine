@@ -78,13 +78,13 @@ bool Game::Destroy()
 
 bool Game::Update()
 {
-	TIME_FUNCTION
+	BEGIN_TIME_BLOCK("Game::Update");
 
 	myInputWrapper.Update();
 	CU::TimerManager::GetInstance()->Update();
 	float deltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
 	Engine::GetInstance()->GetEffectContainer().Update(deltaTime);
-
+	Engine::GetInstance()->GetDebugDisplay().RecordFrameTime(deltaTime);
 
 	if (myInputWrapper.KeyDown(DIK_F5))
 	{
@@ -108,6 +108,8 @@ bool Game::Update()
 	}
 
 	LogicUpdate(deltaTime);
+
+	END_TIME_BLOCK("Game::Update");
 
 	Render(deltaTime);
 	
@@ -172,10 +174,12 @@ void Game::LogicUpdate(const float aDeltaTime)
 
 void Game::Render(const float aDeltaTime)
 {
-	TIME_FUNCTION
+	BEGIN_TIME_BLOCK("Game::Render");
 
 	if (myRenderStuff)
 		myScene->Render();
 
-	Engine::GetInstance()->GetDebugDisplay().Render(myCamera, aDeltaTime);
+	END_TIME_BLOCK("Game::Render");
+
+	Engine::GetInstance()->GetDebugDisplay().Render(myCamera);
 }

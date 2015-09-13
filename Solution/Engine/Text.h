@@ -61,7 +61,8 @@ private:
 	CU::Vector2<float> myCharSize;
 	float myTextWidth;
 
-	const char* myLastText;
+	//const char* myLastText;
+	std::string myLastText;
 	float myLastDrawX;
 	float myLastDrawY;
 	float myLastScale;

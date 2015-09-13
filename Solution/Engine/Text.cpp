@@ -12,7 +12,7 @@
 
 Text::Text()
 	: myHasText(false)
-	, myLastText(nullptr)
+	/*, myLastText(nullptr)*/
 	, myLastDrawX(-999.f)
 	, myLastDrawY(-999.f)
 	, myLastScale(-999.f)
@@ -201,7 +201,7 @@ void Text::UpdateSentence(const char* aString, const float aDrawX, const float a
 {
 	TIME_FUNCTION
 	
-	if (myLastText != nullptr && strcmp(aString, myLastText) == 0 && aDrawX == myLastDrawX && aDrawY == myLastDrawY && aScale == myLastScale)
+	if (/*myLastText != nullptr && */strcmp(aString, myLastText.c_str()) == 0 && aDrawX == myLastDrawX && aDrawY == myLastDrawY && aScale == myLastScale)
 	{
 		return;
 	}
@@ -247,8 +247,6 @@ void Text::UpdateSentence(const char* aString, const float aDrawX, const float a
 
 void Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex, const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV)
 {
-	//TIME_FUNCTION
-
 	int index = aIndex;
 
 	VertexPosUV vert;
@@ -284,8 +282,6 @@ void Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale
 
 void Text::CreateSecondTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex, const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV)
 {
-	//TIME_FUNCTION
-
 	int index = aIndex;
 
 	VertexPosUV vert;

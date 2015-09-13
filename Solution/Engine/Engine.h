@@ -3,6 +3,7 @@
 #include "TextureContainer.h"
 #include "EffectContainer.h"
 #include "FBXFactory.h"
+#include "FontContainer.h"
 #include "DebugDataDisplay.h"
 
 class DirectX;
@@ -21,6 +22,7 @@ public:
 	ID3D11DeviceContext* GetContex();
 	TextureContainer& GetTextureContainer();
 	EffectContainer& GetEffectContainer();
+	FontContainer& GetFontContainer();
 	DebugDataDisplay& GetDebugDisplay();
 	Model* LoadModel(const std::string& aPath, Effect* aEffect);
 
@@ -36,6 +38,7 @@ private:
 	TextureContainer myTextureContainer;
 	EffectContainer myEffectContainer;
 	FBXFactory myModelFactory;
+	FontContainer myFontContainer;
 	DebugDataDisplay myDebugDataDisplay;
 
 	static Engine* myInstance;
@@ -59,6 +62,11 @@ inline TextureContainer& Engine::GetTextureContainer()
 inline EffectContainer& Engine::GetEffectContainer()
 {
 	return myEffectContainer;
+}
+
+inline FontContainer& Engine::GetFontContainer()
+{
+	return myFontContainer;
 }
 
 inline DebugDataDisplay& Engine::GetDebugDisplay()

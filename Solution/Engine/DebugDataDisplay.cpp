@@ -13,9 +13,6 @@ DebugDataDisplay::DebugDataDisplay()
 	, myCPUUSageStartPos(1000.f, -30.f)
 	, myFrameTimeStartPos(1000.f, -60.f)
 	, myTextScale(0.75f)
-	, myFrameTimeIndex(0)
-	, mySampleTimer(1.f)
-	, myNewGraphData(true)
 {
 }
 
@@ -26,11 +23,8 @@ DebugDataDisplay::~DebugDataDisplay()
 
 void DebugDataDisplay::Init()
 {
-	myFont = new Font();
-	myFont->Init("Data/resources/font/font.dds");
-
 	myText = new Text();
-	myText->Init(myFont);
+	myText->Init(Engine::GetInstance()->GetFontContainer().GetFont("Data/resources/font/font.dds"));
 
 	LARGE_INTEGER largeInteger;
 	QueryPerformanceFrequency(&largeInteger);
@@ -39,75 +33,111 @@ void DebugDataDisplay::Init()
 	GetCPUUsage(&myPrevSysKernel, &myPrevSysUser, &myPrevProcKernel, &myPrevProcUser, true);
 
 	myGraphRenderer.Init();
-	myFrameTimes.Init(60);
+
+	myFrameData.myFrameTimes.Init(60);
+	myFrameData.myFrameTimeIndex = 0;
+	myFrameData.mySampleTimer = 1.f;
+	myFrameData.myFrameCounter = 0;
+	myFrameData.myLastDeltaTime = 0.f;
 }
 
-void DebugDataDisplay::AddFunctionTime(const std::string& aFunc, const unsigned long long aStartTime, const unsigned long long aEndTime)
+void DebugDataDisplay::StartFunctionTimer(const std::string& aFunc)
 {
 	FunctionData& it = myFunctionTimers[aFunc];
 
-	if (it.myNameText == nullptr)
-	{
-		it.myNameText = new Text();
-		it.myNameText->Init(myFont);
-	
-		myStringStream.clear();
-		myStringStream.str(std::string());
-		myStringStream << aFunc << ":" << std::endl;
-		it.myNameString = myStringStream.str();
-	
-		it.myTimeText = new Text();
-		it.myTimeText->Init(myFont);
-	}
+	LARGE_INTEGER time;
+	QueryPerformanceCounter(&time);
 
-	it.myStart = aStartTime;
-	it.myEnd = aEndTime;
-	++it.myHitCount;
-	it.myEnabled = true;
+	it.myStart = time.QuadPart;
 }
 
-void DebugDataDisplay::Render(Camera& aCamera, const float aDeltaTime)
+void DebugDataDisplay::EndFunctionTimer(const std::string& aFunc)
 {
-	myNewGraphData = false;
-	mySampleTimer += aDeltaTime;
-	if (mySampleTimer > 0.1f)
-	{
-		myNewGraphData = true;
-		mySampleTimer = 0.f;
+	auto it = myFunctionTimers.find(aFunc);
 
-		if (myFrameTimes.Size() < 60)
+	if (it != myFunctionTimers.end())
+	{
+		if (it->second.myNameText == nullptr)
 		{
-			myFrameTimes.Add(aDeltaTime * 1000.f);
-			myFrameTimeIndex;
+			//Since the namestring wont ever change for each function I can 
+			//create it when we initialize the func-timer, so I dont have to
+			//create another stringstream for the name when printing later
+			myStringStream.clear();
+			myStringStream.str(std::string());
+			myStringStream << aFunc << ":" << std::endl;
+			it->second.myNameString = myStringStream.str();
+
+
+			it->second.myNameText = new Text();
+			it->second.myNameText->Init(Engine::GetInstance()->GetFontContainer().GetFont("Data/resources/font/font.dds"));
+
+			it->second.myTimeText = new Text();
+			it->second.myTimeText->Init(Engine::GetInstance()->GetFontContainer().GetFont("Data/resources/font/font.dds"));
+		}
+
+		LARGE_INTEGER time;
+		QueryPerformanceCounter(&time);
+
+		++it->second.myHitCount;
+		it->second.myEnabled = true;
+
+		float ms = static_cast<float>(((time.QuadPart * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
+		it->second.myMS = ms;
+	}
+}
+
+void DebugDataDisplay::RecordFrameTime(const float aDeltaTime)
+{
+	myBoolContainer.set(eBitSetEnum::NEW_GRAPH_DATA, false);
+
+	myFrameData.myLastDeltaTime = aDeltaTime;
+	myFrameData.mySampleTimer += aDeltaTime;
+	++myFrameData.myFrameCounter;
+
+	if (myFrameData.mySampleTimer > myFrameData.myTimeBetweenSamples)
+	{
+		myBoolContainer.set(eBitSetEnum::NEW_GRAPH_DATA, true);
+
+		float frameTime = myFrameData.mySampleTimer / myFrameData.myFrameCounter;
+		myFrameData.mySampleTimer = 0.f;
+		myFrameData.myFrameCounter = 0;
+
+		if (myFrameData.myFrameTimes.Size() < 60)
+		{
+			myFrameData.myFrameTimes.Add(frameTime * 1000.f);
+			myFrameData.myFrameTimeIndex;
 		}
 		else
 		{
-			if (myFrameTimeIndex >= myFrameTimes.Size())
-				myFrameTimeIndex = 0;
+			if (myFrameData.myFrameTimeIndex >= myFrameData.myFrameTimes.Size())
+				myFrameData.myFrameTimeIndex = 0;
 
-			myFrameTimes[myFrameTimeIndex] = aDeltaTime * 1000.f;
-			++myFrameTimeIndex;
+			myFrameData.myFrameTimes[myFrameData.myFrameTimeIndex] = frameTime * 1000.f;
+			++myFrameData.myFrameTimeIndex;
 		}
 	}
+}
 
-	if (myDisplayStatuses.at(eDisplays::FUNCTION_TIMERS))
+void DebugDataDisplay::Render(Camera& aCamera)
+{
+	if (myBoolContainer.at(eBitSetEnum::FUNCTION_TIMERS))
 	{
 		RenderFunctionTimers(aCamera);
 	}
 
-	if (myDisplayStatuses.at(eDisplays::MEMORY_USAGE))
+	if (myBoolContainer.at(eBitSetEnum::MEMORY_USAGE))
 	{
 		RenderMemoryUsage(aCamera);
 	}
 
-	if (myDisplayStatuses.at(eDisplays::CPU_USAGE))
+	if (myBoolContainer.at(eBitSetEnum::CPU_USAGE))
 	{
 		RenderCPUUsage(aCamera);
 	}
 
-	if (myDisplayStatuses.at(eDisplays::FRAME_TIME))
+	if (myBoolContainer.at(eBitSetEnum::FRAME_TIME))
 	{
-		RenderFrameTime(aCamera, aDeltaTime);
+		RenderFrameTime(aCamera);
 	}
 }
 
@@ -120,11 +150,9 @@ void DebugDataDisplay::RenderFunctionTimers(Camera& aCamera)
 	{
 		if (it->second.myEnabled == true)
 		{
-			float ms = static_cast<float>(((it->second.myEnd * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
-
 			myStringStream.clear();
 			myStringStream.str(std::string());
-			myStringStream << ms << " ms";
+			myStringStream << it->second.myMS << " ms";
 			if (it->second.myHitCount > 1)
 				myStringStream << " (" << it->second.myHitCount << " calls)";
 
@@ -170,11 +198,11 @@ void DebugDataDisplay::RenderCPUUsage(Camera& aCamera)
 	myText->Render(aCamera);
 }
 
-void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
+void DebugDataDisplay::RenderFrameTime(Camera& aCamera)
 {
 	TIME_FUNCTION
 
-	float FPS = 1.f / aDeltaTime;
+	float FPS = 1.f / myFrameData.myLastDeltaTime;
 	myStringStream.clear();
 	myStringStream.str(std::string());
 	myStringStream << "FPS: " << FPS << std::endl;
@@ -183,7 +211,7 @@ void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
 	myText->Render(aCamera);
 
 
-	float frameTimeMS = aDeltaTime * 1000.f;
+	float frameTimeMS = myFrameData.myLastDeltaTime * 1000.f;
 	myStringStream.clear();
 	myStringStream.str(std::string());
 	myStringStream << "FrameTime: " << frameTimeMS << "ms" << std::endl;
@@ -193,7 +221,7 @@ void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
 
 	float graphHeight = 50.f;
 	float graphWidth = 200.f;
-	myGraphRenderer.Render(aCamera, myFrameTimes, { myFrameTimeStartPos.x - graphWidth - 40.f, myFrameTimeStartPos.y - 30.f }, { graphWidth, graphHeight }, 16.f, myNewGraphData);
+	myGraphRenderer.Render(aCamera, myFrameData.myFrameTimes, { myFrameTimeStartPos.x - graphWidth - 40.f, myFrameTimeStartPos.y - 30.f }, { graphWidth, graphHeight }, 16.f, myBoolContainer.at(eBitSetEnum::NEW_GRAPH_DATA));
 }
 
 

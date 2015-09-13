@@ -12,7 +12,7 @@ Font::~Font()
 {
 }
 
-bool Font::Init(char* aFontPath)
+bool Font::Init(const char* aFontPath)
 {
 	myTexture = Engine::GetInstance()->GetTextureContainer().GetTexture(aFontPath);
 

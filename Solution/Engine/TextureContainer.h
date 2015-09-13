@@ -1,5 +1,4 @@
 #pragma once
-#include <GrowingArray.h>
 #include <unordered_map>
 class Texture;
 

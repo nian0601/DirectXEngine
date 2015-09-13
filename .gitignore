@@ -54,3 +54,5 @@ temp/
 Workbed/log/
 *.psess
 *.suo
+*.pdb
+Workbed/Application_Debug.ilk

@@ -13,7 +13,7 @@ public:
 	Font();
 	~Font();
 
-	bool Init(char* aFontPath);
+	bool Init(const char* aFontPath);
 	CharacterData GetCharData(char aChar);
 
 	const CU::Vector2<float>& GetCharSize() const;

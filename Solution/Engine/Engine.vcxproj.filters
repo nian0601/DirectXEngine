@@ -42,6 +42,9 @@
     <ClCompile Include="GraphRenderer.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>
+    <ClCompile Include="FontContainer.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="GraphRenderer.h">
       <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="FontContainer.h">
+      <Filter>Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

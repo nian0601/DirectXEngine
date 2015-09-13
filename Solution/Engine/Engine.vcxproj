@@ -114,6 +114,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontContainer.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GraphRenderer.cpp" />
     <ClCompile Include="Instance.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="FBXFactory.h" />
     <ClInclude Include="FBX\FbxLoader.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="FontContainer.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GraphRenderer.h" />
     <ClInclude Include="IndexBufferWrapper.h" />
