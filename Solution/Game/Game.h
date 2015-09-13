@@ -22,10 +22,13 @@ public:
 	void UnPause();
 	void OnResize(int aWidth, int aHeight);
 
-	void LogicUpdate(const float aDeltaTime);
+	
 
 private:
 	void operator=(Game& aApp) = delete;
+
+	void LogicUpdate(const float aDeltaTime);
+	void Render(const float aDeltaTime);
 
 	CU::InputWrapper myInputWrapper;
 
@@ -41,6 +44,6 @@ private:
 	Light* myLight;
 	CU::Matrix44<float> myWorldMatrix;
 
-	Text* myText;
+	bool myRenderStuff;
 };
 

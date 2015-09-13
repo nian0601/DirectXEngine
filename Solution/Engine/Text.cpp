@@ -22,6 +22,8 @@ Text::Text()
 
 Text::~Text()
 {
+	myVertexBuffer->myVertexBuffer->Release();
+	myIndexBuffer->myIndexBuffer->Release();
 }
 
 void Text::Init(Font* aFont)
@@ -245,7 +247,7 @@ void Text::UpdateSentence(const char* aString, const float aDrawX, const float a
 
 void Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex, const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV)
 {
-	TIME_FUNCTION
+	//TIME_FUNCTION
 
 	int index = aIndex;
 
@@ -282,7 +284,7 @@ void Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale
 
 void Text::CreateSecondTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex, const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV)
 {
-	TIME_FUNCTION
+	//TIME_FUNCTION
 
 	int index = aIndex;
 

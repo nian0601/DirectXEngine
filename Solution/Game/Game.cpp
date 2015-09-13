@@ -64,15 +64,7 @@ bool Game::Init(HWND& aHwnd)
 
 	myScene->AddLight(myLight);
 
-
-
-
-	Font* testFont = new Font();
-	testFont->Init("Data/resources/font/font.dds");
-
-	myText = new Text();
-	myText->Init(testFont);
-
+	myRenderStuff = true;
 
 
 	GAME_LOG("Init Successful");
@@ -110,13 +102,15 @@ bool Game::Update()
 	{
 		Engine::GetInstance()->GetDebugDisplay().ToggleFrameTime();
 	}
+	else if (myInputWrapper.KeyDown(DIK_R))
+	{
+		myRenderStuff = !myRenderStuff;
+	}
 
 	LogicUpdate(deltaTime);
 
-	myScene->Render();
-
-	Engine::GetInstance()->GetDebugDisplay().Render(myCamera, deltaTime);
-
+	Render(deltaTime);
+	
 	return true;
 }
 
@@ -174,4 +168,14 @@ void Game::LogicUpdate(const float aDeltaTime)
 	{
 		myCamera.MoveRight(100.f * aDeltaTime);
 	}
+}
+
+void Game::Render(const float aDeltaTime)
+{
+	TIME_FUNCTION
+
+	if (myRenderStuff)
+		myScene->Render();
+
+	Engine::GetInstance()->GetDebugDisplay().Render(myCamera, aDeltaTime);
 }

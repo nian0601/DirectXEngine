@@ -52,3 +52,5 @@ Libs/libfbxsdk-md_Release.lib
 Solution/ProjectName.opensdf
 temp/
 Workbed/log/
+*.psess
+*.suo

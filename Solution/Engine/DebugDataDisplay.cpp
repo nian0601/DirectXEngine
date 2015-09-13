@@ -51,9 +51,10 @@ void DebugDataDisplay::AddFunctionTime(const std::string& aFunc, const unsigned 
 		it.myNameText = new Text();
 		it.myNameText->Init(myFont);
 	
-		std::stringstream ss;
-		ss << aFunc << ":" << std::endl;
-		it.myNameString = ss.str();
+		myStringStream.clear();
+		myStringStream.str(std::string());
+		myStringStream << aFunc << ":" << std::endl;
+		it.myNameString = myStringStream.str();
 	
 		it.myTimeText = new Text();
 		it.myTimeText->Init(myFont);
@@ -115,73 +116,45 @@ void DebugDataDisplay::RenderFunctionTimers(Camera& aCamera)
 	TIME_FUNCTION
 
 	CU::Vector2<float> drawPos = myFunctionTimersStartPos;
-
 	for (auto it = myFunctionTimers.begin(); it != myFunctionTimers.end(); ++it)
 	{
 		if (it->second.myEnabled == true)
 		{
 			float ms = static_cast<float>(((it->second.myEnd * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
-			if (ms < 0.005f)
-				ms = 0.f;
 
-			std::stringstream timeSS;
-			timeSS << ms << " ms";
+			myStringStream.clear();
+			myStringStream.str(std::string());
+			myStringStream << ms << " ms";
 			if (it->second.myHitCount > 1)
-				timeSS << " (" << it->second.myHitCount << " calls)";
+				myStringStream << " (" << it->second.myHitCount << " calls)";
 
-			timeSS << std::endl;
+			myStringStream << std::endl;
 
 			it->second.myNameText->UpdateSentence(it->second.myNameString.c_str(), drawPos.x, drawPos.y, myTextScale);
 			it->second.myNameText->Render(aCamera);
 
-			it->second.myTimeText->UpdateSentence(timeSS.str().c_str(), drawPos.x + it->second.myNameText->GetTextWidth() + 10.f, drawPos.y, myTextScale);
+			it->second.myTimeText->UpdateSentence(myStringStream.str().c_str(), drawPos.x + it->second.myNameText->GetTextWidth() + 10.f, drawPos.y, myTextScale);
 			it->second.myTimeText->Render(aCamera);
 
 			drawPos.y -= 30.f;
 
-			//FUNCTION_TIMER_LOG("%s took %s", it->second.myNameString.c_str(), timeSS.str().c_str());
+			//FUNCTION_TIMER_LOG("%s took %s", it->second.myNameString.c_str(), myStringStream.str().c_str());
 
 			it->second.myEnabled = false;
 			it->second.myHitCount = 0;
 		}
 	}
-
-
-	//CU::Vector2<float> drawPos = myFunctionTimersStartPos;
-	//
-	//for (auto it = myFunctionTimers.begin(); it != myFunctionTimers.end(); ++it)
-	//{
-	//	if (it->second.myEnabled == true)
-	//	{
-	//		float ms = static_cast<float>(((it->second.myEnd * 1000000 / myFrequency) - (it->second.myStart * 1000000 / myFrequency)) / 1000.f);
-	//		
-	//		float timeDrawX = drawPos.x + it->second.myNameText->GetTextWidth() + 10.f;
-	//
-	//		std::stringstream timeSS;
-	//		timeSS << ms << "ms" << std::endl;
-	//		it->second.myTimeText->UpdateSentence(timeSS.str().c_str(), timeDrawX, drawPos.y - it->second.myDrawY, myTextScale);
-	//
-	//
-	//		it->second.myNameText->Render(aCamera);
-	//		it->second.myTimeText->Render(aCamera);
-	//
-	//		//FUNCTION_TIMER_LOG("%s", ss.str().c_str());
-	//
-	//
-	//		it->second.myEnabled = false;
-	//		it->second.myHitCount = 0;
-	//	}
-	//}
 }
 
 void DebugDataDisplay::RenderMemoryUsage(Camera& aCamera)
 {
 	TIME_FUNCTION
 
-	std::stringstream ss;
-	ss << "Memory: " << GetMemoryUsageMB() << "mb" << std::endl;
+	myStringStream.clear();
+	myStringStream.str(std::string());
+	myStringStream << "Memory: " << GetMemoryUsageMB() << "mb" << std::endl;
 
-	myText->UpdateSentence(ss.str().c_str(), myMemUsageStartPos.x, myMemUsageStartPos.y, myTextScale);
+	myText->UpdateSentence(myStringStream.str().c_str(), myMemUsageStartPos.x, myMemUsageStartPos.y, myTextScale);
 	myText->Render(aCamera);
 }
 
@@ -189,10 +162,11 @@ void DebugDataDisplay::RenderCPUUsage(Camera& aCamera)
 {
 	TIME_FUNCTION
 
-	std::stringstream ss;
-	ss << "CPU: " << GetCPUUsage(&myPrevSysKernel, &myPrevSysUser, &myPrevProcKernel, &myPrevProcUser) << "%" << std::endl;
+	myStringStream.clear();
+	myStringStream.str(std::string());
+	myStringStream << "CPU: " << GetCPUUsage(&myPrevSysKernel, &myPrevSysUser, &myPrevProcKernel, &myPrevProcUser) << "%" << std::endl;
 
-	myText->UpdateSentence(ss.str().c_str(), myCPUUSageStartPos.x, myCPUUSageStartPos.y, myTextScale);
+	myText->UpdateSentence(myStringStream.str().c_str(), myCPUUSageStartPos.x, myCPUUSageStartPos.y, myTextScale);
 	myText->Render(aCamera);
 }
 
@@ -201,22 +175,25 @@ void DebugDataDisplay::RenderFrameTime(Camera& aCamera, const float aDeltaTime)
 	TIME_FUNCTION
 
 	float FPS = 1.f / aDeltaTime;
-	std::stringstream fpsSS;
-	fpsSS << "FPS: " << FPS << std::endl;
+	myStringStream.clear();
+	myStringStream.str(std::string());
+	myStringStream << "FPS: " << FPS << std::endl;
 
-	myText->UpdateSentence(fpsSS.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y, myTextScale);
+	myText->UpdateSentence(myStringStream.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y, myTextScale);
 	myText->Render(aCamera);
 
 
 	float frameTimeMS = aDeltaTime * 1000.f;
-	std::stringstream frameTimeSS;
-	frameTimeSS << "FrameTime: " << frameTimeMS << "ms" << std::endl;
+	myStringStream.clear();
+	myStringStream.str(std::string());
+	myStringStream << "FrameTime: " << frameTimeMS << "ms" << std::endl;
 
-	myText->UpdateSentence(frameTimeSS.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y - 30.f, myTextScale);
+	myText->UpdateSentence(myStringStream.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y - 30.f, myTextScale);
 	myText->Render(aCamera);
 
-	float graphHeight = 100.f;
-	myGraphRenderer.Render(aCamera, myFrameTimes, { myFrameTimeStartPos.x - 300.f, myFrameTimeStartPos.y - 30.f }, { 300.f, graphHeight }, 16.f, myNewGraphData);
+	float graphHeight = 50.f;
+	float graphWidth = 200.f;
+	myGraphRenderer.Render(aCamera, myFrameTimes, { myFrameTimeStartPos.x - graphWidth - 40.f, myFrameTimeStartPos.y - 30.f }, { graphWidth, graphHeight }, 16.f, myNewGraphData);
 }
 
 

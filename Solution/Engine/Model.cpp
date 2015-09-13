@@ -24,6 +24,8 @@ Model::Model()
 
 Model::~Model()
 {
+	myVertexBuffer->myVertexBuffer->Release();
+	myIndexBuffer->myIndexBuffer->Release();
 }
 
 void Model::Init()

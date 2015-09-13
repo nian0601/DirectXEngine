@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <bitset>
 #include <Vector.h>
+#include <sstream>
 
 class Text;
 class Camera;
@@ -84,6 +85,8 @@ private:
 	int myFrameTimeIndex;
 	float mySampleTimer;
 	bool myNewGraphData;
+
+	std::stringstream myStringStream;
 };
 
 inline void DebugDataDisplay::ToggleFunctionTimers()
